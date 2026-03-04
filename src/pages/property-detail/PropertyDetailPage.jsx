@@ -20,10 +20,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+// ✅ your Figma icon (saved in src/assets/icons/for-sale.svg)
+import forSaleIcon from "../../assets/icons/for-sale.svg";
+
 import { apiGet } from "../../services/api/client";
 import { ENDPOINTS } from "../../services/api/endpoints";
 
-//  LAZY: heavy widgets split
+// LAZY: heavy widgets split
 const PropertyGalleryHero = lazy(() => import("../../widgets/property/PropertyGalleryHero"));
 const PropertyMiniMap = lazy(() => import("../../widgets/map/PropertyMiniMap"));
 
@@ -46,9 +49,7 @@ function Section({ title, defaultOpen = true, children }) {
         aria-controls={contentId}
         className="flex w-full min-w-0 items-center justify-between gap-3 px-4 py-4 sm:px-5"
       >
-        <div className="min-w-0 text-sm font-semibold text-[#111827] truncate">
-          {title}
-        </div>
+        <div className="min-w-0 text-sm font-semibold text-[#111827] truncate">{title}</div>
         <ChevronDown
           className={cn(
             "h-5 w-5 shrink-0 text-[#6B7280] transition",
@@ -77,9 +78,7 @@ function FactsItem({ icon: Icon, label, value }) {
 
       <div className="min-w-0">
         <div className="text-xs text-[#6B7280]">{label}</div>
-        <div className="text-sm font-semibold text-[#111827] break-words">
-          {value}
-        </div>
+        <div className="text-sm font-semibold text-[#111827] break-words">{value}</div>
       </div>
     </div>
   );
@@ -102,12 +101,7 @@ function ResultsNavBtn({ label, onClick, children }) {
 }
 
 function inferBookingPurpose(item) {
-  const raw =
-    item?.purpose ||
-    item?.listingPurpose ||
-    item?.statusLabel ||
-    item?.status ||
-    "";
+  const raw = item?.purpose || item?.listingPurpose || item?.statusLabel || item?.status || "";
   const s = String(raw).toLowerCase();
 
   if (s.includes("rent")) return "rent";
@@ -171,19 +165,18 @@ export default function PropertyDetailPage() {
   const statusLabel = item?.statusLabel || "For Sale";
   const bookingPurpose = inferBookingPurpose(item);
 
-   return (
+  return (
     <div className="bg-[#FAFAFA] overflow-x-hidden">
       <PageShell className="py-4 sm:py-6">
         {loading ? (
           <div className="space-y-6">
-            {/* ✅ full-bleed skeleton, no border/rounded */}
             <div className="full-bleed">
               <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />
             </div>
           </div>
         ) : (
           <>
-            {/* ✅ Gallery full-bleed (NO border, NO rounded) */}
+            {/* Gallery full-bleed */}
             <div className="full-bleed">
               <Suspense
                 fallback={<Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />}
@@ -195,10 +188,7 @@ export default function PropertyDetailPage() {
             {/* Results bar */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#EDEDED] bg-white px-4 py-3 sm:px-5">
               <div className="inline-flex min-w-0 items-center gap-3">
-                <ResultsNavBtn
-                  label="Previous result"
-                  onClick={() => alert("Prev result (dummy)")}
-                >
+                <ResultsNavBtn label="Previous result" onClick={() => alert("Prev result (dummy)")}>
                   <ArrowLeft className="h-4 w-4" />
                 </ResultsNavBtn>
 
@@ -206,10 +196,7 @@ export default function PropertyDetailPage() {
                   {item?.resultsLabel || "1/100 Results"}
                 </div>
 
-                <ResultsNavBtn
-                  label="Next result"
-                  onClick={() => alert("Next result (dummy)")}
-                >
+                <ResultsNavBtn label="Next result" onClick={() => alert("Next result (dummy)")}>
                   <ArrowRight className="h-4 w-4" />
                 </ResultsNavBtn>
               </div>
@@ -241,14 +228,18 @@ export default function PropertyDetailPage() {
                         {item?.address || "123 Main Street, San Francisco, CA 94102"}
                       </div>
 
-                      <div className="mt-2 text-sm font-semibold text-[#111827]">
-                        $4,500/month
-                      </div>
+                      <div className="mt-2 text-sm font-semibold text-[#111827]">$4,500/month</div>
                     </div>
 
-                    <div className="inline-flex shrink-0 items-center gap-2 text-sm text-[#6B7280]">
-                      <span className="inline-flex h-2 w-2 rounded-full bg-[#D66355]" />
-                      {statusLabel}
+                    {/* ✅ UPDATED: use your for-sale.svg (no lucide Tag) */}
+                    <div className="inline-flex shrink-0 items-center gap-2">
+                      <img
+                        src={forSaleIcon}
+                        alt=""
+                        className="h-5 w-5"
+                        draggable={false}
+                      />
+                      <span className="text-sm font-semibold text-[#111827]">{statusLabel}</span>
                     </div>
                   </div>
 
@@ -265,7 +256,9 @@ export default function PropertyDetailPage() {
                 <Section title="Description" defaultOpen>
                   <div className="space-y-3 text-sm leading-6 text-[#6B7280] break-words">
                     <p>Welcome to this stunning modern apartment in the heart of downtown...</p>
-                    <p>The open-concept layout features a gourmet kitchen with high-end stainless steel...</p>
+                    <p>
+                      The open-concept layout features a gourmet kitchen with high-end stainless steel...
+                    </p>
                     <p>The primary suite includes a walk-in closet and spa-like ensuite...</p>
                   </div>
                 </Section>
@@ -319,10 +312,7 @@ export default function PropertyDetailPage() {
                     </div>
 
                     <div className="h-2 w-full rounded-full bg-[#F3F4F6]">
-                      <div
-                        className="h-2 rounded-full bg-[#D66355]"
-                        style={{ width: `${score}%` }}
-                      />
+                      <div className="h-2 rounded-full bg-[#D66355]" style={{ width: `${score}%` }} />
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm">
