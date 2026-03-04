@@ -5,6 +5,36 @@ import AuthPrimaryButton from "./AuthPrimaryButton";
 import { isEmail, required } from "../model/validators";
 import { signupInitialValues } from "../model/signupForm";
 
+function normalizePkPhone(input) {
+  const raw = String(input || "");
+
+  // remove everything except digits
+  let digits = raw.replace(/\D/g, "");
+
+  // allow empty while typing
+  if (!digits) return "";
+
+  // if user typed local starting 0xxxx => drop leading 0
+  if (digits.startsWith("0")) digits = digits.slice(1);
+
+  // if not starting with 92, prefix 92
+  if (!digits.startsWith("92")) digits = `92${digits}`;
+
+  // Pakistan: +92 + 10 digits => total digits = 12
+  digits = digits.slice(0, 12);
+
+  return `+${digits}`;
+}
+
+function isValidPkPhone(value) {
+  // strict: +92 + 10 digits => "+92" + 10 = 13 chars, digits count 12
+  const v = String(value || "").trim();
+  if (!v) return false;
+  if (!v.startsWith("+92")) return false;
+  const digits = v.replace(/\D/g, "");
+  return digits.length === 12 && digits.startsWith("92");
+}
+
 export default function SignupForm({ onSubmit, loading = false }) {
   const [values, setValues] = useState(signupInitialValues());
   const [touched, setTouched] = useState({});
@@ -12,19 +42,23 @@ export default function SignupForm({ onSubmit, loading = false }) {
 
   const errors = useMemo(() => {
     const e = {};
+
     const fn = required(values.firstName, "First Name");
     if (fn) e.firstName = fn;
 
     const ln = required(values.lastName, "Last Name");
     if (ln) e.lastName = ln;
 
-    const em = required(values.email, "Email") || (!isEmail(values.email) ? "Enter a valid email." : null);
+    const em =
+      required(values.email, "Email") || (!isEmail(values.email) ? "Enter a valid email." : null);
     if (em) e.email = em;
 
     const ph = required(values.phone, "Phone no");
     if (ph) e.phone = ph;
+    else if (!isValidPkPhone(values.phone)) e.phone = "Enter a valid Pakistan phone number.";
 
     if (!values.acceptTerms) e.acceptTerms = "Please accept terms to continue.";
+
     return e;
   }, [values.firstName, values.lastName, values.email, values.phone, values.acceptTerms]);
 
@@ -32,6 +66,12 @@ export default function SignupForm({ onSubmit, loading = false }) {
 
   const change = (name) => (e) => {
     const v = e?.target?.type === "checkbox" ? e.target.checked : e.target.value;
+
+    if (name === "phone") {
+      setValues((s) => ({ ...s, phone: normalizePkPhone(v) }));
+      return;
+    }
+
     setValues((s) => ({ ...s, [name]: v }));
   };
 
@@ -87,6 +127,8 @@ export default function SignupForm({ onSubmit, loading = false }) {
         value={values.phone}
         onChange={change("phone")}
         placeholder="+92 6728769"
+        inputMode="tel"
+        autoComplete="tel"
         error={touched.phone ? errors.phone : ""}
       />
 

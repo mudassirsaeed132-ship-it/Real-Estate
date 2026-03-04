@@ -4,6 +4,7 @@ import { AUTH_FIXTURE } from "../../db/fixtures/auth";
 // supports BOTH relative and full URLs
 const LOGIN = /\/api\/auth\/login$/;
 const REGISTER = /\/api\/auth\/register$/;
+const FORGOT_PASSWORD = /\/api\/auth\/forgot-password$/;
 const SET_PASSWORD = /\/api\/auth\/set-password$/;
 const VERIFY_CODE = /\/api\/auth\/verify-code$/;
 const RESEND_CODE = /\/api\/auth\/resend-code$/;
@@ -19,8 +20,7 @@ function makeToken(user) {
   );
 }
 
-// very small in-memory store for mock auth flow
-const pendingChallenges = new Map(); // challengeId -> user
+const pendingChallenges = new Map(); // challengeId -> { type, user/email }
 const usersByEmail = new Map(); // email -> user
 
 function makeChallengeId() {
@@ -28,7 +28,7 @@ function makeChallengeId() {
 }
 
 export const authHandlers = [
-  // ✅ LOGIN: accept ANY credentials (frontend dev mode)
+  // ✅ LOGIN
   http.post(LOGIN, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -59,7 +59,7 @@ export const authHandlers = [
     return HttpResponse.json({ token: makeToken(user), user });
   }),
 
-  // ✅ REGISTER: success BUT no auto-login (go to set-password flow)
+  // ✅ REGISTER: returns challengeId (no token) for signup flow
   http.post(REGISTER, async ({ request }) => {
     await delay(350);
     const body = await request.json();
@@ -79,36 +79,57 @@ export const authHandlers = [
     usersByEmail.set(email, newUser);
 
     const challengeId = makeChallengeId();
-    pendingChallenges.set(challengeId, newUser);
+    pendingChallenges.set(challengeId, { type: "signup", user: newUser });
 
-    // ✅ IMPORTANT: no token here, so frontend continues to set-password
     return HttpResponse.json({ challengeId, email });
   }),
 
-  // ✅ SET PASSWORD: accept anything, keep challenge alive
+  // ✅ FORGOT PASSWORD: returns challengeId for reset flow
+  http.post(FORGOT_PASSWORD, async ({ request }) => {
+    await delay(300);
+    const body = await request.json();
+
+    const email = String(body.email || "user@email.com").toLowerCase();
+    const role = body.role === "seller" ? "seller" : "buyer";
+
+    const existing = usersByEmail.get(email) || {
+      id: `u_${Math.random().toString(16).slice(2)}`,
+      firstName: "User",
+      lastName: "",
+      email,
+      role,
+      avatarUrl: "",
+    };
+
+    usersByEmail.set(email, existing);
+
+    const challengeId = makeChallengeId();
+    pendingChallenges.set(challengeId, { type: "forgot", user: existing });
+
+    return HttpResponse.json({ challengeId, email });
+  }),
+
+  // ✅ SET PASSWORD (works for both signup/forgot)
   http.post(SET_PASSWORD, async ({ request }) => {
     await delay(300);
     const body = await request.json();
 
     const email = String(body.email || "").toLowerCase();
     const challengeId = String(body.challengeId || "");
+    const mode = String(body.mode || "");
 
-    const user =
-      (challengeId && pendingChallenges.get(challengeId)) ||
-      (email && usersByEmail.get(email)) ||
-      null;
+    const record = challengeId ? pendingChallenges.get(challengeId) : null;
+    const user = record?.user || (email ? usersByEmail.get(email) : null);
 
-    if (!user) {
-      return HttpResponse.json({ message: "Invalid signup flow" }, { status: 400 });
-    }
+    if (!user) return HttpResponse.json({ message: "Invalid flow" }, { status: 400 });
 
-    // keep challenge for verify step
-    if (challengeId) pendingChallenges.set(challengeId, user);
+    // keep record alive
+    if (challengeId && record) pendingChallenges.set(challengeId, record);
 
-    return HttpResponse.json({ ok: true, challengeId: challengeId || makeChallengeId() });
+    return HttpResponse.json({ ok: true, mode: mode || record?.type || "unknown" });
   }),
 
-  // ✅ VERIFY CODE: accept any code; return token to auto-login
+  // ✅ VERIFY CODE
   http.post(VERIFY_CODE, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -116,26 +137,29 @@ export const authHandlers = [
     const email = String(body.email || "").toLowerCase();
     const role = body.role === "seller" ? "seller" : "buyer";
     const challengeId = String(body.challengeId || "");
+    const mode = String(body.mode || "");
 
-    const user =
-      (challengeId && pendingChallenges.get(challengeId)) ||
-      (email && usersByEmail.get(email)) ||
-      null;
+    const record = challengeId ? pendingChallenges.get(challengeId) : null;
+    const user = record?.user || (email ? usersByEmail.get(email) : null);
 
-    if (!user) {
-      return HttpResponse.json({ message: "Invalid verification flow" }, { status: 400 });
+    if (!user) return HttpResponse.json({ message: "Invalid verification flow" }, { status: 400 });
+
+    // forgot flow: no token needed (go set-password)
+    const effectiveType = mode || record?.type || "signup";
+    if (effectiveType === "forgot") {
+      return HttpResponse.json({ ok: true });
     }
 
+    // signup flow: return token to auto-login
     const finalUser = { ...user, role };
     usersByEmail.set(finalUser.email, finalUser);
 
-    // mark flow complete
     if (challengeId) pendingChallenges.delete(challengeId);
 
     return HttpResponse.json({ token: makeToken(finalUser), user: finalUser });
   }),
 
-  // ✅ RESEND CODE: always ok
+  // ✅ RESEND CODE
   http.post(RESEND_CODE, async () => {
     await delay(200);
     return HttpResponse.json({ ok: true });

@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AuthCard from "../../features/auth/ui/AuthCard";
 import LoginForm from "../../features/auth/ui/LoginForm";
 import { authApi } from "../../services/api/auth";
-import { normalizeRole, getNextFromSearchParams } from "../../features/auth/model/authFlow";
+import { normalizeRole, getNextFromSearchParams, safeEncodeNext } from "../../features/auth/model/authFlow";
 import { useSessionStore } from "../../entities/session/model/sessionStore";
 
 export default function LoginPage() {
@@ -43,22 +43,18 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthCard
-      title="Login"
-      subtitle="Login to access your account"
-      top={
-        <div className="h-6" />
-      }
-    >
+    <AuthCard title="Login" subtitle="Login to access your account" top={<div className="h-6" />}>
       <LoginForm
         loading={loading}
         onSubmit={onSubmit}
-        onForgot={() =>
-          navigate(`/auth/forgot-password${next ? `?next=${encodeURIComponent(next)}` : ""}`)
-        }
-        onSignup={() =>
-          navigate(`/auth/signup?role=${role}${next ? `&next=${encodeURIComponent(next)}` : ""}`)
-        }
+        onForgot={() => {
+          const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
+          navigate(`/auth/forgot-password?role=${encodeURIComponent(role)}${nextParam}`);
+        }}
+        onSignup={() => {
+          const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
+          navigate(`/auth/signup?role=${encodeURIComponent(role)}${nextParam}`);
+        }}
       />
     </AuthCard>
   );

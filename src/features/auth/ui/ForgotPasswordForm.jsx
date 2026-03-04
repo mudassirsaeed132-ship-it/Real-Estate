@@ -9,7 +9,8 @@ export default function ForgotPasswordForm({ onSubmit, loading = false }) {
   const [serverError, setServerError] = useState("");
 
   const error = useMemo(() => {
-    return required(email, "Email") || (!isEmail(email) ? "Enter a valid email." : null);
+    const e = required(email, "Email") || (!isEmail(email) ? "Enter a valid email." : null);
+    return e;
   }, [email]);
 
   const canSubmit = !error && !loading;
@@ -21,7 +22,7 @@ export default function ForgotPasswordForm({ onSubmit, loading = false }) {
     if (!canSubmit) return;
 
     try {
-      await onSubmit?.({ email });
+      await onSubmit?.({ email: email.trim() });
     } catch (err) {
       setServerError(err?.message || "Request failed. Please try again.");
     }

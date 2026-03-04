@@ -11,18 +11,19 @@ export default function SetPasswordPage() {
 
   const [loading, setLoading] = useState(false);
 
+  const mode = searchParams.get("mode") || "signup";
   const role = useMemo(() => normalizeRole(searchParams.get("role")), [searchParams]);
   const email = useMemo(() => String(searchParams.get("email") || "").trim(), [searchParams]);
   const cid = useMemo(() => String(searchParams.get("cid") || "").trim(), [searchParams]);
   const next = searchParams.get("next");
 
-  // Guard: if user lands here directly, send back to role picker
+  // Guard for forgot mode
   useEffect(() => {
-    if (!email) {
+    if (mode === "forgot" && !email) {
       const fallbackNext = next || encodeURIComponent("/");
       navigate(`/auth/role?next=${fallbackNext}`, { replace: true });
     }
-  }, [email, navigate, next]);
+  }, [mode, email, navigate, next]);
 
   const onSubmit = async ({ password }) => {
     setLoading(true);
@@ -32,14 +33,23 @@ export default function SetPasswordPage() {
         role,
         password,
         challengeId: cid || undefined,
+        mode,
       });
 
-      // ✅ Figma flow: Set Password -> Verify Code
+      // ✅ Forgot flow: Set Password -> Login
+      if (mode === "forgot") {
+        const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
+        navigate(`/auth/login?role=${encodeURIComponent(role)}${nextParam}`, { replace: true });
+        return;
+      }
+
+      // ✅ Signup flow (your existing): Set Password -> Verify Code
       const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
       const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
-
       navigate(
-        `/auth/verify-code?role=${encodeURIComponent(role)}&email=${encodeURIComponent(email)}${cidParam}${nextParam}`,
+        `/auth/verify-code?role=${encodeURIComponent(role)}&email=${encodeURIComponent(
+          email
+        )}${cidParam}${nextParam}`,
         { replace: true }
       );
     } finally {
@@ -51,7 +61,7 @@ export default function SetPasswordPage() {
     <AuthCard
       align="left"
       title="Set a password"
-      subtitle="Please set a new password for your account."
+      subtitle="Your previous password has been reseted. Please set a new password for your account."
       titleClassName="mt-14"
     >
       <SetPasswordForm loading={loading} onSubmit={onSubmit} />
