@@ -1,5 +1,5 @@
 // PATH: src/pages/home/HomePage.jsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion, useReducedMotion } from "framer-motion";
 
@@ -37,10 +37,6 @@ export default function HomePage() {
   const [country, setCountry] = useState("Pakistan");
   const [category, setCategory] = useState("all");
 
-  const newThisWeekRef = useRef(null);
-  const nearbyRef = useRef(null);
-  const forYouRef = useRef(null);
-
   const countryItems = useMemo(
     () => DUMMY_COUNTRIES.map((c) => ({ value: c, label: c })),
     []
@@ -54,17 +50,6 @@ export default function HomePage() {
   useEffect(() => {
     apiGet(ENDPOINTS.home).then(setData).catch(console.error);
   }, []);
-
-  // ✅ fast + stable smooth scroll (native) + header offset handled by CSS
-  const scrollToSection = (ref) => {
-    const el = ref?.current;
-    if (!el) return;
-
-    el.scrollIntoView({
-      behavior: shouldReduceMotion ? "auto" : "smooth",
-      block: "start",
-    });
-  };
 
   const sections = data?.sections || {};
   const newThisWeek = sections.newThisWeek || [];
@@ -133,9 +118,7 @@ export default function HomePage() {
                 <Motion.button
                   key={c.key}
                   type="button"
-                  initial={
-                    shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
-                  }
+                  initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: shouldReduceMotion ? 0 : 0.25,
@@ -152,56 +135,27 @@ export default function HomePage() {
                   className="flex flex-col items-center gap-3"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F3F4F6]">
-                    <img src={c.icon} alt={c.label} className="h-8 w-8" loading="lazy" decoding="async" />
+                    <img
+                      src={c.icon}
+                      alt={c.label}
+                      className="h-8 w-8"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
-                  <span className="text-[15px] font-medium text-[#111827]">
-                    {c.label}
-                  </span>
+                  <span className="text-[15px] font-medium text-[#111827]">{c.label}</span>
                 </Motion.button>
               ))}
             </div>
           </div>
 
-          {/* Jump links (smooth scroll) */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            <Motion.button
-              type="button"
-              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-              className="text-[#6B7280] hover:text-[#111827]"
-              onClick={() => scrollToSection(newThisWeekRef)}
-            >
-              New this week
-            </Motion.button>
-            <span className="text-[#E5E7EB]">|</span>
-            <Motion.button
-              type="button"
-              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-              className="text-[#6B7280] hover:text-[#111827]"
-              onClick={() => scrollToSection(nearbyRef)}
-            >
-              Nearby
-            </Motion.button>
-            <span className="text-[#E5E7EB]">|</span>
-            <Motion.button
-              type="button"
-              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
-              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-              className="text-[#6B7280] hover:text-[#111827]"
-              onClick={() => scrollToSection(forYouRef)}
-            >
-              For you
-            </Motion.button>
-          </div>
+          {/* ✅ REMOVED: Jump links row (New this week | Nearby | For you) */}
         </Motion.div>
       </PageShell>
 
       {/* Sections */}
       <PageShell>
         <Motion.div
-          ref={newThisWeekRef}
-          className="scroll-anchor"
           initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -234,8 +188,8 @@ export default function HomePage() {
             <div className="text-white min-w-0">
               <h3 className="text-2xl font-semibold">Know your budget in 3 minutes</h3>
               <p className="mt-2 max-w-[640px] text-sm text-white/80">
-                Get a financing pre-check certificate from our partner banks.
-                Increases your chances of getting the property by 3x.
+                Get a financing pre-check certificate from our partner banks. Increases your chances
+                of getting the property by 3x.
               </p>
             </div>
 
@@ -257,8 +211,6 @@ export default function HomePage() {
 
       <PageShell>
         <Motion.div
-          ref={nearbyRef}
-          className="scroll-anchor"
           initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -277,8 +229,6 @@ export default function HomePage() {
 
       <PageShell className="pb-6">
         <Motion.div
-          ref={forYouRef}
-          className="scroll-anchor"
           initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}

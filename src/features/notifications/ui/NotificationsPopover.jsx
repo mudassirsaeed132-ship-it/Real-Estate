@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Skeleton from "../../../shared/ui/Skeleton";
 import { useNotifications } from "../model/useNotifications";
 
@@ -20,9 +20,7 @@ function TabButton({ active, children, onClick }) {
       ].join(" ")}
     >
       {children}
-      {active ? (
-        <span className="absolute left-4 right-4 -bottom-[1px] h-[2px] bg-[#111827]" />
-      ) : null}
+      {active ? <span className="absolute left-4 right-4 -bottom-[1px] h-[2px] bg-[#111827]" /> : null}
     </button>
   );
 }
@@ -38,9 +36,7 @@ function NotificationRow({ item }) {
           draggable={false}
         />
         <div className="min-w-0">
-          <div className="text-[12px] font-semibold text-[#D66355]">
-            {item.name}
-          </div>
+          <div className="text-[12px] font-semibold text-[#D66355]">{item.name}</div>
 
           <div className="mt-1 text-[11px] leading-5 text-[#6B7280]">
             {item.text}{" "}
@@ -63,38 +59,30 @@ export default function NotificationsPopover({ open, onClose }) {
   const hasToday = today?.length > 0;
   const hasOlder = older?.length > 0;
 
-  const panelClass = useMemo(
-    () =>
-      [
-        "fixed z-[70]",
-        // Desktop: center under header like screenshot
-        "left-1/2 top-[78px] -translate-x-1/2",
-        // Mobile: full width, still on top (so it won't go under search)
-        "max-sm:left-3 max-sm:right-3 max-sm:top-16 max-sm:translate-x-0",
-        "w-[520px] max-w-[92vw]",
-        "overflow-hidden rounded-2xl border border-[#EDEDED] bg-white shadow-xl",
-      ].join(" "),
-    []
-  );
-
   if (!open) return null;
 
   return (
-    <div className={panelClass} role="dialog" aria-modal="false">
+    <div
+      role="dialog"
+      aria-modal="false"
+      className={[
+        // ✅ Anchor to bell button container (UserMenu wrapper)
+        "absolute right-0 top-full mt-3",
+        "z-[80]",
+        "w-[520px] max-w-[92vw]",
+        "overflow-hidden rounded-2xl border border-[#EDEDED] bg-white shadow-xl",
+        // ✅ Mobile: behave like sheet under header
+        "max-sm:fixed max-sm:left-3 max-sm:right-3 max-sm:top-16 max-sm:mt-0",
+      ].join(" ")}
+    >
       {/* Header */}
       <div className="px-5 pt-5 pb-3">
-        <div className="text-[18px] font-semibold text-[#D66355]">
-          Notifications
-        </div>
+        <div className="text-[18px] font-semibold text-[#D66355]">Notifications</div>
 
         {/* Tabs */}
         <div className="mt-4 flex items-center gap-4 border-b border-[#EDEDED]">
           {TABS.map((t) => (
-            <TabButton
-              key={t.key}
-              active={tab === t.key}
-              onClick={() => setTab(t.key)}
-            >
+            <TabButton key={t.key} active={tab === t.key} onClick={() => setTab(t.key)}>
               {t.label}
             </TabButton>
           ))}
@@ -113,9 +101,7 @@ export default function NotificationsPopover({ open, onClose }) {
           <div className="space-y-5">
             {hasToday ? (
               <div>
-                <div className="text-[12px] font-semibold text-[#6B7280]">
-                  Today
-                </div>
+                <div className="text-[12px] font-semibold text-[#6B7280]">Today</div>
                 <div className="mt-3 space-y-3">
                   {today.map((n) => (
                     <NotificationRow key={n.id} item={n} />
@@ -147,12 +133,7 @@ export default function NotificationsPopover({ open, onClose }) {
       </div>
 
       {/* Click outside close handled in UserMenu */}
-      <button
-        type="button"
-        onClick={onClose}
-        className="sr-only"
-        aria-label="Close"
-      />
+      <button type="button" onClick={onClose} className="sr-only" aria-label="Close" />
     </div>
   );
 }

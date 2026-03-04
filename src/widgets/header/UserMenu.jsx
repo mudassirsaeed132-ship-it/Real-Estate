@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Bell, Heart, MessageSquareText, ChevronDown, ChevronRight, Plus } from "lucide-react";
+import { Bell, Heart, ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import IconButton from "../../shared/ui/IconButton";
 import Button from "../../shared/ui/Button";
 import avatarTom from "../../assets/images/avatars/agent-tom.jpg";
 import NotificationsPopover from "../../features/notifications/ui/NotificationsPopover";
+
+// ✅ exact message icon
+import messageIcon from "../../assets/icons/message.svg";
 
 import { useSessionStore } from "../../entities/session/model/sessionStore";
 import { ROLES } from "../../entities/session/model/shapes";
@@ -86,12 +89,18 @@ export default function UserMenu() {
             <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
           </IconButton>
 
+          {/* ✅ MESSAGE icon from assets (exact) */}
           <IconButton
             className="h-9 w-9 sm:h-10 sm:w-10"
             aria-label="Chats"
             onClick={() => go("/inbox")}
           >
-            <MessageSquareText className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
+            <img
+              src={messageIcon}
+              alt=""
+              className="h-4 w-4 sm:h-[18px] sm:w-[18px]"
+              draggable={false}
+            />
           </IconButton>
 
           <IconButton
@@ -140,7 +149,12 @@ export default function UserMenu() {
                 role="menu"
               >
                 <div className="flex items-center gap-3 px-4 py-4">
-                  <img src={uiUser.avatar} alt="" className="h-11 w-11 rounded-full object-cover" draggable={false} />
+                  <img
+                    src={uiUser.avatar}
+                    alt=""
+                    className="h-11 w-11 rounded-full object-cover"
+                    draggable={false}
+                  />
 
                   <div className="min-w-0">
                     <div className="truncate text-[16px] sm:text-[18px] font-semibold text-[#111827] leading-tight">
