@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AuthCard from "../../features/auth/ui/AuthCard";
 import SignupForm from "../../features/auth/ui/SignupForm";
-import { normalizeRole, getNextFromSearchParams } from "../../features/auth/model/authFlow";
+import { normalizeRole, safeEncodeNext } from "../../features/auth/model/authFlow";
 import { mapSignupPayload } from "../../features/auth/model/signupForm";
 import { authApi } from "../../services/api/auth";
 import { uploadsApi } from "../../services/uploads/uploadsApi";
@@ -14,10 +14,9 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   const setRole = useSessionStore((s) => s.setRole);
-  const setSession = useSessionStore((s) => s.setSession);
 
   const role = useMemo(() => normalizeRole(searchParams.get("role")), [searchParams]);
-  const next = searchParams.get("next");
+  const next = searchParams.get("next"); // may be encoded already
 
   // if user hits /auth/signup without role -> send to role selection WITH next preserved
   useEffect(() => {
@@ -41,19 +40,17 @@ export default function SignupPage() {
       const payload = mapSignupPayload(values, role, avatarFileId);
       const data = await authApi.register(payload);
 
-      // Auto-login supported
-      if (data?.token && data?.user) {
-        setSession({ token: data.token, user: data.user });
+      const email = String(payload.email || "").trim();
+      const cid = data?.challengeId ? String(data.challengeId) : "";
 
-        const finalNext = getNextFromSearchParams(searchParams);
-        navigate(finalNext || "/", { replace: true });
-        return;
-      }
+      // ✅ Figma flow: Signup -> Set Password
+      const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
+      const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
 
-      // fallback to login (keep next)
-      navigate(`/auth/login?role=${role}${next ? `&next=${encodeURIComponent(next)}` : ""}`, {
-        replace: true,
-      });
+      navigate(
+        `/auth/set-password?role=${encodeURIComponent(role)}&email=${encodeURIComponent(email)}${cidParam}${nextParam}`,
+        { replace: true }
+      );
     } finally {
       setLoading(false);
     }
@@ -71,9 +68,10 @@ export default function SignupPage() {
         Already have an account?{" "}
         <button
           type="button"
-          onClick={() =>
-            navigate(`/auth/login?role=${role}${next ? `&next=${encodeURIComponent(next)}` : ""}`)
-          }
+          onClick={() => {
+            const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
+            navigate(`/auth/login?role=${encodeURIComponent(role)}${nextParam}`);
+          }}
           className="font-semibold text-[#D66355]"
         >
           Login

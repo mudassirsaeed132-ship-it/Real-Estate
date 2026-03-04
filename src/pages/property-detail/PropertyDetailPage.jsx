@@ -171,23 +171,24 @@ export default function PropertyDetailPage() {
   const statusLabel = item?.statusLabel || "For Sale";
   const bookingPurpose = inferBookingPurpose(item);
 
-  return (
+   return (
     <div className="bg-[#FAFAFA] overflow-x-hidden">
       <PageShell className="py-4 sm:py-6">
         {loading ? (
           <div className="space-y-6">
-            <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full rounded-3xl" />
+            {/* ✅ full-bleed skeleton, no border/rounded */}
+            <div className="full-bleed">
+              <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />
+            </div>
           </div>
         ) : (
           <>
-            {/*  Gallery (lazy) */}
-            <div className="w-full min-w-0 overflow-hidden rounded-[28px] border border-[#EDEDED] bg-white">
+            {/* ✅ Gallery full-bleed (NO border, NO rounded) */}
+            <div className="full-bleed">
               <Suspense
-                fallback={
-                  <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full rounded-[28px]" />
-                }
+                fallback={<Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />}
               >
-                <PropertyGalleryHero images={imgs} className="rounded-[28px]" />
+                <PropertyGalleryHero images={imgs} />
               </Suspense>
             </div>
 

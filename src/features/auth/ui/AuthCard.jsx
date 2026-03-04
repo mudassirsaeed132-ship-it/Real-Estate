@@ -1,4 +1,4 @@
-import logo from "../../../assets/images/logo/real-estate-logo.png";
+import { IMG } from "../../../app/config/images";
 
 export default function AuthCard({
   title,
@@ -8,17 +8,16 @@ export default function AuthCard({
   align = "center",
   titleClassName = "",
   contentClassName = "",
-  showLogo = true, // ✅ NEW
+  showLogo = true,
 }) {
   const isLeft = align === "left";
 
   return (
     <section className="w-full">
-      {/* ✅ Logo optional */}
       {showLogo ? (
         <div className="flex justify-center">
           <img
-            src={logo}
+            src={IMG.authLogo.full}
             alt="Real Estate"
             className="h-[64px] sm:h-[78px] w-auto"
             draggable={false}
@@ -35,7 +34,7 @@ export default function AuthCard({
 
         <h1
           className={[
-            (showLogo ? "mt-4" : "mt-16"), // ✅ if no logo, give top spacing
+            showLogo ? "mt-4" : "mt-16",
             "text-[40px] sm:text-[44px] font-semibold leading-tight text-[#111827]",
             isLeft ? "text-left" : "text-center",
             titleClassName,

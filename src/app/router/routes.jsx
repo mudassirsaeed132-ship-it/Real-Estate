@@ -1,7 +1,8 @@
 import { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import AuthLayout from "../layout/AuthLayout";
 
-//  helper: lazy + preload (production-friendly)
+// helper: lazy + preload (production-friendly)
 function lazyWithPreload(factory) {
   const Component = lazy(factory);
   Component.preload = () => factory();
@@ -35,13 +36,11 @@ const ForgotPasswordPage = lazyWithPreload(() => import("../../pages/auth/Forgot
 const VerifyCodePage = lazyWithPreload(() => import("../../pages/auth/VerifyCodePage"));
 const SetPasswordPage = lazyWithPreload(() => import("../../pages/auth/SetPasswordPage"));
 
-//  optional: idle prefetch (fast navigation without UI break)
+// optional: idle prefetch (fast navigation without UI break)
 export function prefetchCommonRoutes() {
-  // env switch (optional): set VITE_PREFETCH_ROUTES="false" to disable
   if (import.meta.env.VITE_PREFETCH_ROUTES === "false") return;
 
   const run = () => {
-    // keep it small: only most likely next screens
     PropertiesPage.preload?.();
     InboxPage.preload?.();
     ProfilePage.preload?.();
@@ -60,6 +59,9 @@ export const routes = [
     path: "/auth",
     element: <AuthLayout />,
     children: [
+      // ✅ /auth -> /auth/role (no blank screen)
+      { index: true, element: <Navigate to="role" replace /> },
+
       { path: "role", element: <RoleSelectionPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },

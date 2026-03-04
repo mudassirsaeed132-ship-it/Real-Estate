@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
 .leaflet-container { width: 100%; height: 100%; }
 .re-marker { background: transparent; border: none; }
-
+.leaflet-container {
+  position: relative;
+  z-index: 0;
+}
 /*  Smooth scrolling (fastest native) + sticky header offset */
 :root {
   --app-header-h: 72px; /* fallback; real value Header.jsx auto set karega */

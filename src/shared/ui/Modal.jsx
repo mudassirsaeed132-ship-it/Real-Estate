@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "../lib/cn";
 
-//  Updated widths (Figma-like, responsive)
+// Updated widths (Figma-like, responsive)
 const WIDTH = {
   sm: "max-w-[560px]",
   md: "max-w-[720px]",
@@ -35,13 +35,11 @@ export default function Modal({
   const panelRef = useRef(null);
   const prevActiveRef = useRef(null);
 
-  //  keep mounted until exit animation completes (no UI snap)
   const [mounted, setMounted] = useState(Boolean(open));
   useEffect(() => {
     if (open) setMounted(true);
   }, [open]);
 
-  //  lock scroll + ESC + focus management while mounted
   useEffect(() => {
     if (!mounted) return;
 
@@ -53,7 +51,6 @@ export default function Modal({
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
 
-    // focus panel (basic accessibility)
     const t = setTimeout(() => {
       panelRef.current?.focus?.();
     }, 0);
@@ -63,11 +60,8 @@ export default function Modal({
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
 
-      // restore focus
       const prev = prevActiveRef.current;
-      if (prev && typeof prev.focus === "function") {
-        prev.focus();
-      }
+      if (prev && typeof prev.focus === "function") prev.focus();
       prevActiveRef.current = null;
     };
   }, [mounted, onClose]);
@@ -93,32 +87,33 @@ export default function Modal({
   }, [reduceMotion]);
 
   if (!mounted) return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <AnimatePresence
       onExitComplete={() => {
-        //  unmount after animation
         setMounted(false);
       }}
     >
       {open ? (
         <motion.div
           key="modal-root"
-          className="fixed inset-0 z-[100]"
+          // ✅ VERY HIGH z-index + isolate fixes Leaflet/map stacking issues
+          className="fixed inset-0 z-[9999] isolate"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
         >
-          {/* Overlay */}
+          {/* Overlay (behind panel) */}
           <motion.button
             type="button"
-            className={cn("absolute inset-0", overlayClassName)}
+            className={cn("absolute inset-0 z-0", overlayClassName)}
             aria-label="Close modal overlay"
             onClick={() => (closeOnOverlay ? onClose?.() : null)}
             {...motionCfg.overlay}
           />
 
-          {/* Panel */}
+          {/* Panel (above overlay) */}
           <motion.div
             ref={panelRef}
             role="dialog"
@@ -126,6 +121,7 @@ export default function Modal({
             tabIndex={-1}
             className={cn(
               "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+              "z-10", // ✅ ensure panel above overlay
               "w-[92vw]",
               WIDTH[size] || WIDTH.md,
               HEIGHT[height] || HEIGHT.tall,
