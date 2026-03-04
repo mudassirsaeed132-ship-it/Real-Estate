@@ -1,3 +1,25 @@
 @import "tailwindcss";
+
 .leaflet-container { width: 100%; height: 100%; }
 .re-marker { background: transparent; border: none; }
+
+/*  Smooth scrolling (fastest native) + sticky header offset */
+:root {
+  --app-header-h: 72px; /* fallback; real value Header.jsx auto set karega */
+}
+
+/* anchor / hash scroll ke time header overlap avoid */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--app-header-h) + 12px);
+}
+
+/*  HomePage refs */
+.scroll-anchor {
+  scroll-margin-top: calc(var(--app-header-h) + 12px);
+}
+
+/* accessibility + performance: reduced motion users ke liye smooth off */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

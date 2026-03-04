@@ -1,30 +1,59 @@
 import { lazy } from "react";
 import AuthLayout from "../layout/AuthLayout";
 
-const HomePage = lazy(() => import("../../pages/home/HomePage"));
-const PropertiesPage = lazy(() => import("../../pages/properties/PropertiesPage"));
-const PropertyDetailPage = lazy(() => import("../../pages/property-detail/PropertyDetailPage"));
+//  helper: lazy + preload (production-friendly)
+function lazyWithPreload(factory) {
+  const Component = lazy(factory);
+  Component.preload = () => factory();
+  return Component;
+}
 
-const BookingPage = lazy(() => import("../../pages/booking/BookingPage"));
-const CompareReportPage = lazy(() => import("../../pages/compare/CompareReportPage"));
-const InboxPage = lazy(() => import("../../pages/inbox/InboxPage"));
+const HomePage = lazyWithPreload(() => import("../../pages/home/HomePage"));
+const PropertiesPage = lazyWithPreload(() => import("../../pages/properties/PropertiesPage"));
+const PropertyDetailPage = lazyWithPreload(() => import("../../pages/property-detail/PropertyDetailPage"));
 
-const NotFoundPage = lazy(() => import("../../pages/not-found/NotFoundPage"));
-const ProfilePage = lazy(() => import("../../pages/profile/ProfilePage"));
-const SavedSearchesPage = lazy(() => import("../../pages/profile/SavedSearchesPage"));
-const ViewedPropertiesPage = lazy(() => import("../../pages/profile/ViewedPropertiesPage"));
-const FavoritesPage = lazy(() => import("../../pages/profile/FavoritesPage"));
-const BookingsPage = lazy(() => import("../../pages/profile/BookingsPage"));
-const PrivacyControlsPage = lazy(() => import("../../pages/settings/PrivacyControlsPage"));
-const FinancialPrecheckPage = lazy(() => import("../../pages/precheck/FinancialPrecheckPage"));
-const ShareWithBanksPage = lazy(() => import("../../pages/precheck/ShareWithBanksPage"));
+const BookingPage = lazyWithPreload(() => import("../../pages/booking/BookingPage"));
+const CompareReportPage = lazyWithPreload(() => import("../../pages/compare/CompareReportPage"));
+const InboxPage = lazyWithPreload(() => import("../../pages/inbox/InboxPage"));
 
-const RoleSelectionPage = lazy(() => import("../../pages/auth/RoleSelectionPage"));
-const LoginPage = lazy(() => import("../../pages/auth/LoginPage"));
-const SignupPage = lazy(() => import("../../pages/auth/SignupPage"));
-const ForgotPasswordPage = lazy(() => import("../../pages/auth/ForgotPasswordPage"));
-const VerifyCodePage = lazy(() => import("../../pages/auth/VerifyCodePage"));
-const SetPasswordPage = lazy(() => import("../../pages/auth/SetPasswordPage"));
+const NotFoundPage = lazyWithPreload(() => import("../../pages/not-found/NotFoundPage"));
+
+const ProfilePage = lazyWithPreload(() => import("../../pages/profile/ProfilePage"));
+const SavedSearchesPage = lazyWithPreload(() => import("../../pages/profile/SavedSearchesPage"));
+const ViewedPropertiesPage = lazyWithPreload(() => import("../../pages/profile/ViewedPropertiesPage"));
+const FavoritesPage = lazyWithPreload(() => import("../../pages/profile/FavoritesPage"));
+const BookingsPage = lazyWithPreload(() => import("../../pages/profile/BookingsPage"));
+const PrivacyControlsPage = lazyWithPreload(() => import("../../pages/settings/PrivacyControlsPage"));
+
+const FinancialPrecheckPage = lazyWithPreload(() => import("../../pages/precheck/FinancialPrecheckPage"));
+const ShareWithBanksPage = lazyWithPreload(() => import("../../pages/precheck/ShareWithBanksPage"));
+
+const RoleSelectionPage = lazyWithPreload(() => import("../../pages/auth/RoleSelectionPage"));
+const LoginPage = lazyWithPreload(() => import("../../pages/auth/LoginPage"));
+const SignupPage = lazyWithPreload(() => import("../../pages/auth/SignupPage"));
+const ForgotPasswordPage = lazyWithPreload(() => import("../../pages/auth/ForgotPasswordPage"));
+const VerifyCodePage = lazyWithPreload(() => import("../../pages/auth/VerifyCodePage"));
+const SetPasswordPage = lazyWithPreload(() => import("../../pages/auth/SetPasswordPage"));
+
+//  optional: idle prefetch (fast navigation without UI break)
+export function prefetchCommonRoutes() {
+  // env switch (optional): set VITE_PREFETCH_ROUTES="false" to disable
+  if (import.meta.env.VITE_PREFETCH_ROUTES === "false") return;
+
+  const run = () => {
+    // keep it small: only most likely next screens
+    PropertiesPage.preload?.();
+    InboxPage.preload?.();
+    ProfilePage.preload?.();
+  };
+
+  if (typeof window === "undefined") return;
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(run, { timeout: 2000 });
+  } else {
+    setTimeout(run, 1200);
+  }
+}
 
 export const routes = [
   {
@@ -35,8 +64,8 @@ export const routes = [
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
-    { path: "verify-code", element: <VerifyCodePage /> },
-    { path: "set-password", element: <SetPasswordPage /> },
+      { path: "verify-code", element: <VerifyCodePage /> },
+      { path: "set-password", element: <SetPasswordPage /> },
     ],
   },
 

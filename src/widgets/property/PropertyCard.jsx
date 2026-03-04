@@ -1,33 +1,128 @@
 // PATH: src/widgets/property/PropertyCard.jsx
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import { cn } from "../../shared/lib/cn";
 import PropertyBadges from "../../entities/property/ui/PropertyBadges";
 import PropertyStatsRow from "../../entities/property/ui/PropertyStatsRow";
 import locationIcon from "../../assets/icons/property/location.svg";
 
-// ✅ compare
-import { useCompareStore, compareActions } from "../../features/property-compare/model/compareStore";
+//  compare
+import {
+  useCompareStore,
+  compareActions,
+} from "../../features/property-compare/model/compareStore";
 import CompareSelectIndicator from "../../features/property-compare/ui/CompareSelectIndicator";
+
+function CardImageCarousel({ images, title, idx, dir, onPrev, onNext, children }) {
+  const reduceMotion = useReducedMotion();
+  const total = images.length || 0;
+  const current = images[idx] || images[0];
+
+  //  Prefetch next/prev for smoother arrow switching
+  useEffect(() => {
+    if (total < 2) return;
+    const nextSrc = images[(idx + 1) % total];
+    const prevSrc = images[(idx - 1 + total) % total];
+    [nextSrc, prevSrc].filter(Boolean).forEach((src) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    });
+  }, [idx, images, total]);
+
+  const variants = {
+    enter: (d) =>
+      reduceMotion
+        ? { opacity: 0 }
+        : { opacity: 0, x: d > 0 ? 18 : -18, scale: 1.003 },
+    center: reduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 },
+    exit: (d) =>
+      reduceMotion
+        ? { opacity: 0 }
+        : { opacity: 0, x: d > 0 ? -18 : 18, scale: 0.997 },
+  };
+
+  const transition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.16, ease: [0.16, 1, 0.3, 1] };
+
+  return (
+    <div className="relative">
+      <div className="aspect-[4/3] w-full bg-[#F3F4F6]">
+        <AnimatePresence initial={false} custom={dir} mode="popLayout">
+          {current ? (
+            <motion.img
+              key={current}
+              src={current}
+              alt={title}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              custom={dir}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={transition}
+            />
+          ) : null}
+        </AnimatePresence>
+      </div>
+
+      {/* overlays (badges + fav/compare indicator etc.) */}
+      {children}
+
+      {/* Arrows (only when >1 image) */}
+      {total > 1 ? (
+        <>
+          <button
+            type="button"
+            onClick={onPrev}
+            className="absolute left-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="h-4 w-4 text-[#111827]" />
+          </button>
+
+          <button
+            type="button"
+            onClick={onNext}
+            className="absolute right-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
+            aria-label="Next image"
+          >
+            <ChevronRight className="h-4 w-4 text-[#111827]" />
+          </button>
+        </>
+      ) : null}
+    </div>
+  );
+}
 
 export default function PropertyCard({ property, initialFav = false }) {
   const images = useMemo(() => property.images?.filter(Boolean) || [], [property]);
   const [idx, setIdx] = useState(0);
+  const [dir, setDir] = useState(1); //  1 next, -1 prev (for animation direction)
   const [fav, setFav] = useState(Boolean(initialFav));
 
   const compareEnabled = useCompareStore((s) => s.enabled);
   const selectedIds = useCompareStore((s) => s.selectedIds);
+
+  //  keep idx valid if images change
+  useEffect(() => {
+    if (!images.length) return;
+    if (idx >= images.length) setIdx(0);
+  }, [images, idx]);
 
   const isSelected = useMemo(
     () => selectedIds.some((id) => String(id) === String(property.id)),
     [selectedIds, property.id]
   );
 
-  const current = images[idx] || images[0];
-
-  // ✅ keep compare payload small + consistent
+  //  keep compare payload small + consistent
   const compareItem = useMemo(
     () => ({
       id: property.id,
@@ -67,14 +162,16 @@ export default function PropertyCard({ property, initialFav = false }) {
   const prev = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!images.length) return;
+    if (images.length < 2) return;
+    setDir(-1);
     setIdx((v) => (v - 1 + images.length) % images.length);
   };
 
   const next = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!images.length) return;
+    if (images.length < 2) return;
+    setDir(1);
     setIdx((v) => (v + 1) % images.length);
   };
 
@@ -107,7 +204,7 @@ export default function PropertyCard({ property, initialFav = false }) {
     isSelected ? "border-[#D66355]" : "border-[#EDEDED]"
   );
 
-  // ✅ Compare mode: whole card toggles selection (no navigation)
+  //  Compare mode: whole card toggles selection (no navigation)
   if (compareEnabled) {
     return (
       <div
@@ -122,47 +219,23 @@ export default function PropertyCard({ property, initialFav = false }) {
         }}
         className={cardClass}
       >
-        <div className="relative">
-          <div className="aspect-4/3 w-full bg-[#F3F4F6]">
-            {current ? (
-              <img
-                src={current}
-                alt={property.title}
-                className="h-full w-full object-cover"
-                loading="lazy"
-                draggable={false}
-              />
-            ) : null}
-          </div>
-
+        <CardImageCarousel
+          images={images}
+          title={property.title}
+          idx={idx}
+          dir={dir}
+          onPrev={prev}
+          onNext={next}
+        >
           <PropertyBadges badges={property.badges} />
 
-          {/* ✅ Compare selection indicator */}
+          {/*  Compare selection indicator */}
           <CompareSelectIndicator
             selected={isSelected}
             onToggle={toggleCompare}
             className="absolute right-3 top-3"
           />
-
-          {/* Arrows */}
-          <button
-            type="button"
-            onClick={prev}
-            className="absolute left-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="h-4 w-4 text-[#111827]" />
-          </button>
-
-          <button
-            type="button"
-            onClick={next}
-            className="absolute right-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
-            aria-label="Next image"
-          >
-            <ChevronRight className="h-4 w-4 text-[#111827]" />
-          </button>
-        </div>
+        </CardImageCarousel>
 
         <div className="p-4">
           <h3 className="text-[15px] font-semibold text-[#111827]">{property.title}</h3>
@@ -178,22 +251,17 @@ export default function PropertyCard({ property, initialFav = false }) {
     );
   }
 
-  // ✅ Normal mode: Link to detail
+  //  Normal mode: Link to detail
   return (
     <Link to={`/properties/${property.id}`} className={cardClass}>
-      <div className="relative">
-        <div className="aspect-[4/3] w-full bg-[#F3F4F6]">
-          {current ? (
-            <img
-              src={current}
-              alt={property.title}
-              className="h-full w-full object-cover"
-              loading="lazy"
-              draggable={false}
-            />
-          ) : null}
-        </div>
-
+      <CardImageCarousel
+        images={images}
+        title={property.title}
+        idx={idx}
+        dir={dir}
+        onPrev={prev}
+        onNext={next}
+      >
         <PropertyBadges badges={property.badges} />
 
         {/* Favorite */}
@@ -210,26 +278,7 @@ export default function PropertyCard({ property, initialFav = false }) {
             )}
           />
         </button>
-
-        {/* Arrows */}
-        <button
-          type="button"
-          onClick={prev}
-          className="absolute left-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
-          aria-label="Previous image"
-        >
-          <ChevronLeft className="h-4 w-4 text-[#111827]" />
-        </button>
-
-        <button
-          type="button"
-          onClick={next}
-          className="absolute right-3 top-[68%] -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm opacity-0 transition group-hover:opacity-100"
-          aria-label="Next image"
-        >
-          <ChevronRight className="h-4 w-4 text-[#111827]" />
-        </button>
-      </div>
+      </CardImageCarousel>
 
       <div className="p-4">
         <h3 className="text-[15px] font-semibold text-[#111827]">{property.title}</h3>

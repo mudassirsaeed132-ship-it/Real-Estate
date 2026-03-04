@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+// PATH: src/pages/home/HomePage.jsx
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion as Motion, useReducedMotion } from "framer-motion";
 
 import PageShell from "../../app/layout/PageShell";
 import { apiGet } from "../../services/api/client";
@@ -29,10 +31,15 @@ const QUICK_CATS = [
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const shouldReduceMotion = useReducedMotion();
   const [data, setData] = useState(null);
 
   const [country, setCountry] = useState("Pakistan");
   const [category, setCategory] = useState("all");
+
+  const newThisWeekRef = useRef(null);
+  const nearbyRef = useRef(null);
+  const forYouRef = useRef(null);
 
   const countryItems = useMemo(
     () => DUMMY_COUNTRIES.map((c) => ({ value: c, label: c })),
@@ -48,6 +55,17 @@ export default function HomePage() {
     apiGet(ENDPOINTS.home).then(setData).catch(console.error);
   }, []);
 
+  // ✅ fast + stable smooth scroll (native) + header offset handled by CSS
+  const scrollToSection = (ref) => {
+    const el = ref?.current;
+    if (!el) return;
+
+    el.scrollIntoView({
+      behavior: shouldReduceMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  };
+
   const sections = data?.sections || {};
   const newThisWeek = sections.newThisWeek || [];
   const nearby = sections.nearby || [];
@@ -57,7 +75,15 @@ export default function HomePage() {
     <div className="min-w-0">
       {/* Top controls area like UI */}
       <PageShell className="pt-6">
-        <div className="space-y-4 min-w-0">
+        <Motion.div
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.35,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="space-y-4 min-w-0"
+        >
           {/* Location row */}
           <div className="flex items-center justify-between rounded-xl border border-[#EDEDED] bg-white px-4 py-3 min-w-0">
             <div className="flex flex-1 items-center gap-2 min-w-0">
@@ -103,10 +129,21 @@ export default function HomePage() {
           {/* Quick categories icons */}
           <div className="py-6">
             <div className="mx-auto grid max-w-5xl grid-cols-3 justify-items-center gap-y-8 gap-x-10 sm:grid-cols-5 sm:gap-x-16 md:gap-x-24">
-              {QUICK_CATS.map((c) => (
-                <button
+              {QUICK_CATS.map((c, idx) => (
+                <Motion.button
                   key={c.key}
                   type="button"
+                  initial={
+                    shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }
+                  }
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.25,
+                    delay: shouldReduceMotion ? 0 : 0.05 * idx,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                   onClick={() => {
                     if (c.key === "buy") navigate("/properties?purpose=sale");
                     else if (c.key === "rent") navigate("/properties?purpose=rent");
@@ -115,37 +152,87 @@ export default function HomePage() {
                   className="flex flex-col items-center gap-3"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F3F4F6]">
-                    <img src={c.icon} alt={c.label} className="h-8 w-8" />
+                    <img src={c.icon} alt={c.label} className="h-8 w-8" loading="lazy" decoding="async" />
                   </div>
                   <span className="text-[15px] font-medium text-[#111827]">
                     {c.label}
                   </span>
-                </button>
+                </Motion.button>
               ))}
             </div>
           </div>
-        </div>
+
+          {/* Jump links (smooth scroll) */}
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+            <Motion.button
+              type="button"
+              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+              className="text-[#6B7280] hover:text-[#111827]"
+              onClick={() => scrollToSection(newThisWeekRef)}
+            >
+              New this week
+            </Motion.button>
+            <span className="text-[#E5E7EB]">|</span>
+            <Motion.button
+              type="button"
+              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+              className="text-[#6B7280] hover:text-[#111827]"
+              onClick={() => scrollToSection(nearbyRef)}
+            >
+              Nearby
+            </Motion.button>
+            <span className="text-[#E5E7EB]">|</span>
+            <Motion.button
+              type="button"
+              whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+              className="text-[#6B7280] hover:text-[#111827]"
+              onClick={() => scrollToSection(forYouRef)}
+            >
+              For you
+            </Motion.button>
+          </div>
+        </Motion.div>
       </PageShell>
 
       {/* Sections */}
       <PageShell>
-        <PropertySection
-          title="New this week"
-          subtitle="Fresh properties just added by owners"
-          items={newThisWeek}
-        />
+        <Motion.div
+          ref={newThisWeekRef}
+          className="scroll-anchor"
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.35,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <PropertySection
+            title="New this week"
+            subtitle="Fresh properties just added by owners"
+            items={newThisWeek}
+          />
+        </Motion.div>
       </PageShell>
 
-      {/* ✅ Precheck CTA band (fixed max width + responsive layout) */}
+      {/* Precheck CTA band */}
       <div className="bg-[#D66355]">
         <PageShell className="py-10">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <Motion.div
+            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.35,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between"
+          >
             <div className="text-white min-w-0">
-              <h3 className="text-2xl font-semibold">
-                Know your budget in 3 minutes
-              </h3>
-
-              {/* ✅ FIX: max-w-160 was invalid → caused overflow */}
+              <h3 className="text-2xl font-semibold">Know your budget in 3 minutes</h3>
               <p className="mt-2 max-w-[640px] text-sm text-white/80">
                 Get a financing pre-check certificate from our partner banks.
                 Increases your chances of getting the property by 3x.
@@ -158,30 +245,54 @@ export default function HomePage() {
                 "h-11 rounded-full bg-white px-10 text-sm font-semibold",
                 "text-[#D66355] hover:bg-white active:bg-white",
                 "transition-none",
-                "w-full md:w-auto", // ✅ mobile full width, desktop auto
+                "w-full md:w-auto",
               ].join(" ")}
               onClick={() => navigate("/precheck")}
             >
               Start Pre-check
             </Button>
-          </div>
+          </Motion.div>
         </PageShell>
       </div>
 
       <PageShell>
-        <PropertySection
-          title="Nearby"
-          subtitle="Fresh properties just added by owners"
-          items={nearby}
-        />
+        <Motion.div
+          ref={nearbyRef}
+          className="scroll-anchor"
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.35,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <PropertySection
+            title="Nearby"
+            subtitle="Fresh properties just added by owners"
+            items={nearby}
+          />
+        </Motion.div>
       </PageShell>
 
       <PageShell className="pb-6">
-        <PropertySection
-          title="For You"
-          subtitle="Fresh properties just added by owners"
-          items={forYou}
-        />
+        <Motion.div
+          ref={forYouRef}
+          className="scroll-anchor"
+          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.35,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
+          <PropertySection
+            title="For You"
+            subtitle="Fresh properties just added by owners"
+            items={forYou}
+          />
+        </Motion.div>
       </PageShell>
     </div>
   );

@@ -1,5 +1,5 @@
 // PATH: src/pages/properties/PropertiesPage.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 
 import PageShell from "../../app/layout/PageShell";
 import FiltersModal from "../../features/property-search/ui/FiltersModal";
@@ -10,13 +10,15 @@ import FiltersBar from "../../features/property-search/ui/FiltersBar";
 import { usePropertySearch } from "../../features/property-search/model/usePropertySearch";
 import { getProperties } from "../../services/api/properties";
 import PropertyGrid from "../../widgets/property/PropertyGrid";
-import PropertiesMap from "../../widgets/map/PropertiesMap";
 import Skeleton from "../../shared/ui/Skeleton";
 
 import { buildFilterChips, removeChip } from "../../features/property-search/model/filters";
 
-// ✅ compare
+//  compare
 import { compareActions } from "../../features/property-compare/model/compareStore";
+
+//  LAZY: map heavy bundle split
+const PropertiesMap = lazy(() => import("../../widgets/map/PropertiesMap"));
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -30,7 +32,6 @@ export default function PropertiesPage() {
   const [resp, setResp] = useState(null);
   const [error, setError] = useState("");
 
-  // Defaults (only once)
   useEffect(() => {
     if (!params.purpose) setParam("purpose", "sale");
     if (!params.view) setParam("view", "grid");
@@ -39,14 +40,12 @@ export default function PropertiesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ✅ AUTO OFF compare mode when leaving /properties (keep selection)
   useEffect(() => {
     return () => {
       compareActions.stop({ clear: false });
     };
   }, []);
 
-  // Fetch
   useEffect(() => {
     setLoading(true);
     setError("");
@@ -70,7 +69,6 @@ export default function PropertiesPage() {
   const view = params.view || "grid";
   const skeletonCount = Number(params.pageSize || 20);
 
-  // ✅ support both meta.totalPages and meta.pages
   const totalPages = meta?.totalPages || meta?.pages || 1;
   const page = clamp(Number(params.page || 1), 1, totalPages);
 
@@ -140,9 +138,7 @@ export default function PropertiesPage() {
           </div>
         ) : items.length === 0 ? (
           <div className="rounded-2xl border border-[#EDEDED] bg-white p-6 text-center">
-            <div className="text-base font-semibold text-[#111827]">
-              No results found
-            </div>
+            <div className="text-base font-semibold text-[#111827]">No results found</div>
             <div className="mt-1 text-sm text-[#6B7280]">
               Try adjusting filters or clearing all.
             </div>
@@ -156,7 +152,15 @@ export default function PropertiesPage() {
           </div>
         ) : view === "map" ? (
           <div className="min-w-0">
-            <PropertiesMap items={items} />
+            <Suspense
+              fallback={
+                <div className="min-w-0 rounded-2xl border border-[#EDEDED] bg-white p-4">
+                  <Skeleton className="h-[420px] md:h-[520px] w-full rounded-xl" />
+                </div>
+              }
+            >
+              <PropertiesMap items={items} />
+            </Suspense>
           </div>
         ) : (
           <div className="min-w-0">
@@ -167,8 +171,7 @@ export default function PropertiesPage() {
         {!loading && !error && totalPages > 1 ? (
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-sm text-[#6B7280]">
-              Page <span className="font-semibold text-[#111827]">{page}</span>{" "}
-              of{" "}
+              Page <span className="font-semibold text-[#111827]">{page}</span> of{" "}
               <span className="font-semibold text-[#111827]">{totalPages}</span>
             </div>
 

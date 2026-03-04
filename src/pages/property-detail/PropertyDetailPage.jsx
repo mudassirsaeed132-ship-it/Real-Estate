@@ -1,5 +1,5 @@
 // src/pages/property-detail/PropertyDetailPage.jsx
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState, lazy, Suspense } from "react";
 import { useParams } from "react-router-dom";
 import PageShell from "../../app/layout/PageShell";
 import Skeleton from "../../shared/ui/Skeleton";
@@ -23,9 +23,11 @@ import {
 import { apiGet } from "../../services/api/client";
 import { ENDPOINTS } from "../../services/api/endpoints";
 
-import PropertyGalleryHero from "../../widgets/property/PropertyGalleryHero";
+//  LAZY: heavy widgets split
+const PropertyGalleryHero = lazy(() => import("../../widgets/property/PropertyGalleryHero"));
+const PropertyMiniMap = lazy(() => import("../../widgets/map/PropertyMiniMap"));
+
 import AgentSidebar from "../../widgets/property/AgentSidebar";
-import PropertyMiniMap from "../../widgets/map/PropertyMiniMap";
 
 import avatarSarah from "../../assets/images/avatars/agent-sarah.jpg";
 import avatarLeslie from "../../assets/images/avatars/user-leslie.jpg";
@@ -100,7 +102,6 @@ function ResultsNavBtn({ label, onClick, children }) {
 }
 
 function inferBookingPurpose(item) {
-  // ✅ prefer explicit backend-ready fields
   const raw =
     item?.purpose ||
     item?.listingPurpose ||
@@ -111,8 +112,6 @@ function inferBookingPurpose(item) {
 
   if (s.includes("rent")) return "rent";
   if (s.includes("sale") || s.includes("buy")) return "sale";
-
-  // fallback (current UI shows For Sale)
   return "sale";
 }
 
@@ -181,9 +180,15 @@ export default function PropertyDetailPage() {
           </div>
         ) : (
           <>
-            {/* Gallery */}
+            {/*  Gallery (lazy) */}
             <div className="w-full min-w-0 overflow-hidden rounded-[28px] border border-[#EDEDED] bg-white">
-              <PropertyGalleryHero images={imgs} className="rounded-[28px]" />
+              <Suspense
+                fallback={
+                  <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full rounded-[28px]" />
+                }
+              >
+                <PropertyGalleryHero images={imgs} className="rounded-[28px]" />
+              </Suspense>
             </div>
 
             {/* Results bar */}
@@ -240,7 +245,6 @@ export default function PropertyDetailPage() {
                       </div>
                     </div>
 
-                    {/* ✅ dynamic status */}
                     <div className="inline-flex shrink-0 items-center gap-2 text-sm text-[#6B7280]">
                       <span className="inline-flex h-2 w-2 rounded-full bg-[#D66355]" />
                       {statusLabel}
@@ -259,22 +263,18 @@ export default function PropertyDetailPage() {
 
                 <Section title="Description" defaultOpen>
                   <div className="space-y-3 text-sm leading-6 text-[#6B7280] break-words">
-                    <p>
-                      Welcome to this stunning modern apartment in the heart of downtown...
-                    </p>
-                    <p>
-                      The open-concept layout features a gourmet kitchen with high-end stainless steel...
-                    </p>
-                    <p>
-                      The primary suite includes a walk-in closet and spa-like ensuite...
-                    </p>
+                    <p>Welcome to this stunning modern apartment in the heart of downtown...</p>
+                    <p>The open-concept layout features a gourmet kitchen with high-end stainless steel...</p>
+                    <p>The primary suite includes a walk-in closet and spa-like ensuite...</p>
                   </div>
                 </Section>
 
                 <Section title="Location Address" defaultOpen>
                   <div className="w-full min-w-0 overflow-hidden rounded-xl border border-[#EDEDED]">
                     <div className="h-[210px] sm:h-[260px] lg:h-[280px] w-full">
-                      <PropertyMiniMap lat={item?.lat} lng={item?.lng} />
+                      <Suspense fallback={<Skeleton className="h-full w-full" />}>
+                        <PropertyMiniMap lat={item?.lat} lng={item?.lng} />
+                      </Suspense>
                     </div>
                   </div>
                 </Section>
@@ -296,6 +296,7 @@ export default function PropertyDetailPage() {
                               alt=""
                               className="h-full w-full object-cover"
                               loading="lazy"
+                              decoding="async"
                             />
                             {isLast ? (
                               <div className="absolute inset-0 grid place-items-center bg-black/45 text-xs font-semibold text-white">
@@ -312,9 +313,7 @@ export default function PropertyDetailPage() {
                 <Section title="AI Value Insights" defaultOpen>
                   <div className="w-full min-w-0 space-y-3">
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span className="min-w-0 text-[#6B7280] truncate">
-                        Fair Value Score
-                      </span>
+                      <span className="min-w-0 text-[#6B7280] truncate">Fair Value Score</span>
                       <span className="shrink-0 text-[#6B7280]">{score}/100</span>
                     </div>
 
@@ -326,9 +325,7 @@ export default function PropertyDetailPage() {
                     </div>
 
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span className="min-w-0 text-[#6B7280] truncate">
-                        Market Comparison
-                      </span>
+                      <span className="min-w-0 text-[#6B7280] truncate">Market Comparison</span>
                       <span className="shrink-0 font-semibold text-[#D66355]">+5%</span>
                     </div>
 
@@ -342,9 +339,7 @@ export default function PropertyDetailPage() {
                 </Section>
 
                 <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#EDEDED] bg-white p-4 sm:p-5">
-                  <div className="text-sm font-semibold text-[#111827]">
-                    Property Factsheet
-                  </div>
+                  <div className="text-sm font-semibold text-[#111827]">Property Factsheet</div>
 
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <Button className="h-12 w-full bg-[#D66355] text-white hover:bg-[#C85A4E]">

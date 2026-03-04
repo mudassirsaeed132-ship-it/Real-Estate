@@ -1,6 +1,7 @@
 // src/widgets/property/PropertyGalleryHero.jsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { cn } from "../../shared/lib/cn";
 
 export default function PropertyGalleryHero({
@@ -8,42 +9,94 @@ export default function PropertyGalleryHero({
   className = "",
   heightClassName = "h-[240px] sm:h-[360px] lg:h-[520px] xl:h-[560px] 2xl:h-[600px]",
 }) {
+  const reduceMotion = useReducedMotion();
   const safeImages = useMemo(() => images.filter(Boolean), [images]);
   const total = safeImages.length || 1;
 
   const [idx, setIdx] = useState(0);
+  const [dir, setDir] = useState(1); // ✅ 1 = next, -1 = prev
 
-  const prev = () => setIdx((v) => (v - 1 + total) % total);
-  const next = () => setIdx((v) => (v + 1) % total);
+  const prev = () => {
+    setDir(-1);
+    setIdx((v) => (v - 1 + total) % total);
+  };
+
+  const next = () => {
+    setDir(1);
+    setIdx((v) => (v + 1) % total);
+  };
+
+  const goTo = (i) => {
+    if (i === idx) return;
+    setDir(i > idx ? 1 : -1);
+    setIdx(i);
+  };
 
   const activeSrc = safeImages[idx] || safeImages[0];
 
-  return (
-    <div
-      className={cn(
-        // ✅ Full-bleed image container (no inner border/bg so image truly "covers")
-        "relative w-full overflow-hidden",
-        className
-      )}
-    >
-      <div className={cn("relative w-full", heightClassName)}>
-        {activeSrc ? (
-          <img
-            src={activeSrc}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            draggable={false}
-          />
-        ) : (
-          <div className="absolute inset-0 bg-black/5" />
-        )}
+  // ✅ prefetch next/prev for smooth arrows
+  useEffect(() => {
+    if (!safeImages.length) return;
+    const nextSrc = safeImages[(idx + 1) % total];
+    const prevSrc = safeImages[(idx - 1 + total) % total];
+    [nextSrc, prevSrc].filter(Boolean).forEach((src) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    });
+  }, [idx, safeImages, total]);
 
-        {/* Counter (top-right) */}
+  const variants = {
+    enter: (d) =>
+      reduceMotion
+        ? { opacity: 0 }
+        : { opacity: 0, x: d > 0 ? 28 : -28, scale: 1.005 },
+    center: reduceMotion
+      ? { opacity: 1 }
+      : { opacity: 1, x: 0, scale: 1 },
+    exit: (d) =>
+      reduceMotion
+        ? { opacity: 0 }
+        : { opacity: 0, x: d > 0 ? -28 : 28, scale: 0.995 },
+  };
+
+  const transition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.18, ease: [0.16, 1, 0.3, 1] };
+
+  return (
+    <div className={cn("relative w-full overflow-hidden", className)}>
+      <div className={cn("relative w-full", heightClassName)}>
+        {/* ✅ Animated image layer */}
+        <AnimatePresence initial={false} custom={dir} mode="popLayout">
+          {activeSrc ? (
+            <motion.img
+              key={activeSrc}
+              src={activeSrc}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+              draggable={false}
+              decoding="async"
+              loading="eager"
+              fetchPriority="high"
+              custom={dir}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={transition}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-black/5" />
+          )}
+        </AnimatePresence>
+
+        {/* Counter */}
         <div className="absolute right-5 top-5 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
           {idx + 1}/{total}
         </div>
 
-        {/* Arrows (match Figma: bigger circle + subtle ring) */}
+        {/* Arrows */}
         <button
           type="button"
           onClick={prev}
@@ -77,7 +130,7 @@ export default function PropertyGalleryHero({
               <button
                 key={i}
                 type="button"
-                onClick={() => setIdx(i)}
+                onClick={() => goTo(i)}
                 className={cn(
                   "h-1.5 w-7 rounded-full",
                   i === idx ? "bg-white" : "bg-white/45"

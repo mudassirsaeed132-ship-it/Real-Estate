@@ -6,34 +6,54 @@ const LOGIN = /\/api\/auth\/login$/;
 const REGISTER = /\/api\/auth\/register$/;
 
 function makeToken(user) {
-  return btoa(JSON.stringify({ sub: user.id, email: user.email, role: user.role, iat: Date.now() }));
+  return btoa(
+    JSON.stringify({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      iat: Date.now(),
+    })
+  );
 }
 
 export const authHandlers = [
+  // ✅ LOGIN: accept ANY credentials (frontend dev mode)
   http.post(LOGIN, async ({ request }) => {
-    await delay(400);
+    await delay(300);
     const body = await request.json();
 
-    const user = AUTH_FIXTURE.users.find((u) => u.email === body.email);
-    if (!user) return HttpResponse.json({ message: "Invalid credentials" }, { status: 401 });
-    if (body.password !== AUTH_FIXTURE.password)
-      return HttpResponse.json({ message: "Invalid credentials" }, { status: 401 });
-
     const role = body.role === "seller" ? "seller" : "buyer";
-    const finalUser = { ...user, role };
+    const email = String(body.email || "user@email.com").toLowerCase();
 
-    return HttpResponse.json({ token: makeToken(finalUser), user: finalUser });
+    // If email matches fixture user, use it (nice for consistent avatar/name),
+    // otherwise create a demo user on the fly.
+    const fixtureUser =
+      AUTH_FIXTURE?.users?.find((u) => String(u.email).toLowerCase() === email) || null;
+
+    const user = fixtureUser
+      ? { ...fixtureUser, role }
+      : {
+          id: `u_demo_${Math.random().toString(16).slice(2)}`,
+          firstName: "Demo",
+          lastName: "User",
+          email,
+          role,
+          avatarUrl: "",
+        };
+
+    return HttpResponse.json({ token: makeToken(user), user });
   }),
 
+  // ✅ REGISTER: always success + auto-login
   http.post(REGISTER, async ({ request }) => {
-    await delay(450);
+    await delay(350);
     const body = await request.json();
 
     const newUser = {
       id: `u_${Math.random().toString(16).slice(2)}`,
       firstName: body.firstName || "User",
       lastName: body.lastName || "",
-      email: body.email || "user@email.com",
+      email: String(body.email || "user@email.com").toLowerCase(),
       role: body.role === "seller" ? "seller" : "buyer",
       avatarUrl: "",
     };
