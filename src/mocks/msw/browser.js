@@ -4,7 +4,7 @@ import { propertiesHandlers } from "./handlers/properties.handlers";
 import { profileHandlers } from "./handlers/profile.handlers";
 import { precheckHandlers } from "./handlers/precheck.handlers";
 import { notificationsHandlers } from "./handlers/notifications.handlers";
-import { authHandlers } from "./handlers/auth.handlers"; // ✅ add
+import { authHandlers } from "./handlers/auth.handlers";
 
 export const worker = setupWorker(
   ...homeHandlers,
@@ -12,5 +12,5 @@ export const worker = setupWorker(
   ...profileHandlers,
   ...precheckHandlers,
   ...notificationsHandlers,
-  ...authHandlers // ✅ add
+  ...authHandlers
 );

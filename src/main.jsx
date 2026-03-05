@@ -6,12 +6,27 @@ import "leaflet/dist/leaflet.css";
 
 async function enableMocks() {
   const { worker } = await import("./mocks/msw/browser");
-  return worker.start({
+  await worker.start({
     onUnhandledRequest: "bypass",
     serviceWorker: {
       url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
     },
   });
+
+  // ✅ Ensure SW is ready
+  if ("serviceWorker" in navigator) {
+    await navigator.serviceWorker.ready;
+
+    // If controller is still missing, MSW can't intercept yet.
+    // Fallback: one-time reload to let SW take control.
+    if (!navigator.serviceWorker.controller) {
+      const key = "__msw_reload_once__";
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        window.location.reload();
+      }
+    }
+  }
 }
 
 (async () => {

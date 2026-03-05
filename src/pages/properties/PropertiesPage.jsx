@@ -14,15 +14,11 @@ import Skeleton from "../../shared/ui/Skeleton";
 
 import { buildFilterChips, removeChip } from "../../features/property-search/model/filters";
 
-//  compare
+// compare
 import { compareActions } from "../../features/property-compare/model/compareStore";
 
-//  LAZY: map heavy bundle split
+// LAZY: map heavy bundle split
 const PropertiesMap = lazy(() => import("../../widgets/map/PropertiesMap"));
-
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
-}
 
 export default function PropertiesPage() {
   const { params, setParam, clearAll } = usePropertySearch();
@@ -68,9 +64,6 @@ export default function PropertiesPage() {
   const meta = resp?.meta || null;
   const view = params.view || "grid";
   const skeletonCount = Number(params.pageSize || 20);
-
-  const totalPages = meta?.totalPages || meta?.pages || 1;
-  const page = clamp(Number(params.page || 1), 1, totalPages);
 
   const chips = buildFilterChips(params);
 
@@ -168,33 +161,7 @@ export default function PropertiesPage() {
           </div>
         )}
 
-        {!loading && !error && totalPages > 1 ? (
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm text-[#6B7280]">
-              Page <span className="font-semibold text-[#111827]">{page}</span> of{" "}
-              <span className="font-semibold text-[#111827]">{totalPages}</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                disabled={page <= 1}
-                onClick={() => setParam("page", String(page - 1))}
-                className="h-10 rounded-full border border-[#EDEDED] bg-white px-5 text-sm font-semibold text-[#111827] disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                disabled={page >= totalPages}
-                onClick={() => setParam("page", String(page + 1))}
-                className="h-10 rounded-full border border-[#EDEDED] bg-white px-5 text-sm font-semibold text-[#111827] disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        ) : null}
+        {/* ✅ Pagination UI removed (Page X of Y + Previous/Next) */}
       </div>
     </PageShell>
   );
