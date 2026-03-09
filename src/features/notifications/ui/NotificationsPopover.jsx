@@ -29,22 +29,13 @@ function NotificationRow({ item }) {
   return (
     <div className="rounded-2xl bg-[#FDE2E0]/50 px-4 py-3">
       <div className="flex gap-3">
-        <img
-          src={item.avatar}
-          alt=""
-          className="h-9 w-9 rounded-full object-cover"
-          draggable={false}
-        />
+        <img src={item.avatar} alt="" className="h-9 w-9 rounded-full object-cover" draggable={false} />
         <div className="min-w-0">
           <div className="text-[12px] font-semibold text-[#D66355]">{item.name}</div>
-
           <div className="mt-1 text-[11px] leading-5 text-[#6B7280]">
             {item.text}{" "}
-            {item.accent ? (
-              <span className="font-semibold text-[#D66355]">{item.accent}</span>
-            ) : null}
+            {item.accent ? <span className="font-semibold text-[#D66355]">{item.accent}</span> : null}
           </div>
-
           <div className="mt-1 text-[10px] text-[#9CA3AF]">{item.time}</div>
         </div>
       </div>
@@ -66,20 +57,16 @@ export default function NotificationsPopover({ open, onClose }) {
       role="dialog"
       aria-modal="false"
       className={[
-        // ✅ Anchor to bell button container (UserMenu wrapper)
-        "absolute right-0 top-full mt-3",
-        "z-[80]",
-        "w-[520px] max-w-[92vw]",
+        "absolute right-0 top-full mt-3 z-[80]",
+        "w-[420px] lg:w-[460px] xl:w-[480px]",
+        "max-w-[calc(100vw-24px)]",
         "overflow-hidden rounded-2xl border border-[#EDEDED] bg-white shadow-xl",
-        // ✅ Mobile: behave like sheet under header
         "max-sm:fixed max-sm:left-3 max-sm:right-3 max-sm:top-16 max-sm:mt-0",
       ].join(" ")}
     >
-      {/* Header */}
       <div className="px-5 pt-5 pb-3">
         <div className="text-[18px] font-semibold text-[#D66355]">Notifications</div>
 
-        {/* Tabs */}
         <div className="mt-4 flex items-center gap-4 border-b border-[#EDEDED]">
           {TABS.map((t) => (
             <TabButton key={t.key} active={tab === t.key} onClick={() => setTab(t.key)}>
@@ -89,7 +76,6 @@ export default function NotificationsPopover({ open, onClose }) {
         </div>
       </div>
 
-      {/* Body scroll */}
       <div className="max-h-[60vh] overflow-auto px-5 pb-5">
         {loading ? (
           <div className="space-y-3">
@@ -112,9 +98,7 @@ export default function NotificationsPopover({ open, onClose }) {
 
             {hasOlder ? (
               <div>
-                <div className="text-[12px] font-semibold text-[#6B7280]">
-                  Older Notifications
-                </div>
+                <div className="text-[12px] font-semibold text-[#6B7280]">Older Notifications</div>
                 <div className="mt-3 space-y-3">
                   {older.map((n) => (
                     <NotificationRow key={n.id} item={n} />
@@ -132,7 +116,6 @@ export default function NotificationsPopover({ open, onClose }) {
         )}
       </div>
 
-      {/* Click outside close handled in UserMenu */}
       <button type="button" onClick={onClose} className="sr-only" aria-label="Close" />
     </div>
   );

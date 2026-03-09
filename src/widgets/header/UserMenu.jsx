@@ -6,7 +6,6 @@ import Button from "../../shared/ui/Button";
 import avatarTom from "../../assets/images/avatars/agent-tom.jpg";
 import NotificationsPopover from "../../features/notifications/ui/NotificationsPopover";
 
-// ✅ exact message icon
 import messageIcon from "../../assets/icons/message.svg";
 
 import { useSessionStore } from "../../entities/session/model/sessionStore";
@@ -18,7 +17,6 @@ export default function UserMenu() {
   const [notifOpen, setNotifOpen] = useState(false);
   const wrapRef = useRef(null);
 
-  // ✅ IMPORTANT: do NOT return objects from zustand selector
   const token = useSessionStore((s) => s.token);
   const user = useSessionStore((s) => s.user);
   const role = useSessionStore((s) => s.role);
@@ -26,8 +24,10 @@ export default function UserMenu() {
 
   const isAuthed = Boolean(token);
 
-  // buyer/renter only app? then keep this false
-  const showSell = isAuthed && role === ROLES.SELLER;
+  const isSeller = String(role) === ROLES.SELLER || String(user?.role) === ROLES.SELLER;
+
+  // ✅ show SELL only while notifications are open (and only seller)
+  const showSell = isAuthed && notifOpen;
 
   const uiUser = useMemo(() => {
     const name = user?.firstName || user?.name || "User";
@@ -74,13 +74,14 @@ export default function UserMenu() {
   };
 
   return (
-    <div className="flex items-center gap-2" ref={wrapRef}>
+    <div className="flex items-center gap-2 flex-nowrap" ref={wrapRef}>
       {!isAuthed ? (
         <Button onClick={() => goAuth("/")} className="h-10 rounded-full px-5">
           Login
         </Button>
       ) : (
         <>
+          {/* Heart */}
           <IconButton
             className="h-9 w-9 sm:h-10 sm:w-10"
             aria-label="Favorites"
@@ -89,7 +90,7 @@ export default function UserMenu() {
             <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
           </IconButton>
 
-          {/* ✅ MESSAGE icon from assets (exact) */}
+          {/* Message */}
           <IconButton
             className="h-9 w-9 sm:h-10 sm:w-10"
             aria-label="Chats"
@@ -103,17 +104,23 @@ export default function UserMenu() {
             />
           </IconButton>
 
-          <IconButton
-            className="h-9 w-9 sm:h-10 sm:w-10"
-            aria-label="Notifications"
-            onClick={() => {
-              setMenuOpen(false);
-              setNotifOpen((v) => !v);
-            }}
-          >
-            <Bell className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
-          </IconButton>
+          {/* Bell + Popover */}
+          <div className="relative">
+            <IconButton
+              className="h-9 w-9 sm:h-10 sm:w-10"
+              aria-label="Notifications"
+              onClick={() => {
+                setMenuOpen(false);
+                setNotifOpen((v) => !v);
+              }}
+            >
+              <Bell className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
+            </IconButton>
 
+            <NotificationsPopover open={notifOpen} onClose={() => setNotifOpen(false)} />
+          </div>
+
+          {/* ✅ Profile (avatar) FIRST */}
           <div className="relative">
             <button
               type="button"
@@ -205,11 +212,12 @@ export default function UserMenu() {
             ) : null}
           </div>
 
+          {/* ✅ SELL AFTER avatar/profile (matches Figma) */}
           {showSell ? (
             <Button
               variant="outline"
               onClick={() => go("/sell")}
-              className="hidden sm:inline-flex h-10 rounded-full border-[#D66355] text-[#D66355] hover:bg-[#D66355]/10 px-4"
+              className="inline-flex h-9 sm:h-10 rounded-full border-[#D66355] text-[#D66355] hover:bg-[#D66355]/10 px-4"
             >
               <span className="inline-flex items-center gap-2">
                 <Plus className="h-4 w-4" />
@@ -217,8 +225,6 @@ export default function UserMenu() {
               </span>
             </Button>
           ) : null}
-
-          <NotificationsPopover open={notifOpen} onClose={() => setNotifOpen(false)} />
         </>
       )}
     </div>

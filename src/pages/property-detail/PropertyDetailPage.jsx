@@ -7,7 +7,6 @@ import Button from "../../shared/ui/Button";
 import IconButton from "../../shared/ui/IconButton";
 import { cn } from "../../shared/lib/cn";
 import {
-  Share2,
   Heart,
   ChevronDown,
   Home,
@@ -20,8 +19,9 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-// ✅ your Figma icon (saved in src/assets/icons/for-sale.svg)
+// ✅ your Figma icons (assets)
 import forSaleIcon from "../../assets/icons/for-sale.svg";
+import shareIcon from "../../assets/icons/share.svg";
 
 import { apiGet } from "../../services/api/client";
 import { ENDPOINTS } from "../../services/api/endpoints";
@@ -203,7 +203,7 @@ export default function PropertyDetailPage() {
 
               <div className="flex shrink-0 items-center gap-2">
                 <IconButton aria-label="Share" onClick={() => alert("Share (dummy)")}>
-                  <Share2 className="h-5 w-5 text-[#6B7280]" />
+                  <img src={shareIcon} alt="" className="h-5 w-5" draggable={false} />
                 </IconButton>
 
                 <IconButton aria-label="Favorite" onClick={() => alert("Favorite (dummy)")}>
@@ -231,14 +231,9 @@ export default function PropertyDetailPage() {
                       <div className="mt-2 text-sm font-semibold text-[#111827]">$4,500/month</div>
                     </div>
 
-                    {/* ✅ UPDATED: use your for-sale.svg (no lucide Tag) */}
+                    {/* ✅ status icon */}
                     <div className="inline-flex shrink-0 items-center gap-2">
-                      <img
-                        src={forSaleIcon}
-                        alt=""
-                        className="h-5 w-5"
-                        draggable={false}
-                      />
+                      <img src={forSaleIcon} alt="" className="h-5 w-5" draggable={false} />
                       <span className="text-sm font-semibold text-[#111827]">{statusLabel}</span>
                     </div>
                   </div>
