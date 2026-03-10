@@ -16,7 +16,7 @@ export default function AuthFileField({ label, value, onFile, placeholder = "IMG
           value={value || ""}
           placeholder={placeholder}
           className={[
-            "w-full h-[48px] rounded-[10px] border px-4 pr-12 text-[14px] text-[#111827]",
+            "w-full h-12 rounded-[10px] border px-4 pr-12 text-[14px] text-[#111827]",
             "border-[#E5E7EB] bg-white",
           ].join(" ")}
           onClick={() => ref.current?.click()}

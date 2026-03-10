@@ -59,7 +59,7 @@ export const routes = [
     path: "/auth",
     element: <AuthLayout />,
     children: [
-      // ✅ /auth -> /auth/role (no blank screen)
+      //  /auth -> /auth/role (no blank screen)
       { index: true, element: <Navigate to="role" replace /> },
 
       { path: "role", element: <RoleSelectionPage /> },

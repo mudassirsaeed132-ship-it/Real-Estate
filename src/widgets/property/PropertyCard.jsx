@@ -51,7 +51,7 @@ function CardImageCarousel({ images, title, idx, dir, onPrev, onNext, children }
 
   return (
     <div className="relative">
-      <div className="aspect-[4/3] w-full bg-[#F3F4F6]">
+      <div className="aspect-4/3 w-full bg-[#F3F4F6]">
         <AnimatePresence initial={false} custom={dir} mode="popLayout">
           {current ? (
             <motion.img

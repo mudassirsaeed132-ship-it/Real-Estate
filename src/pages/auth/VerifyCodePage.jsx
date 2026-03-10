@@ -15,9 +15,9 @@ export default function VerifyCodePage() {
 
   const setSession = useSessionStore((s) => s.setSession);
 
-  // ✅ mode decides UI + flow
+  //  mode decides UI + flow
   const mode = searchParams.get("mode") || "signup"; // signup by default
-  const showBackToLogin = mode === "forgot"; // ✅ ONLY forgot flow shows back button
+  const showBackToLogin = mode === "forgot"; //  ONLY forgot flow shows back button
 
   const role = useMemo(() => normalizeRole(searchParams.get("role")), [searchParams]);
   const email = useMemo(() => String(searchParams.get("email") || "").trim(), [searchParams]);
@@ -42,7 +42,7 @@ export default function VerifyCodePage() {
         mode,
       });
 
-      // ✅ Forgot flow: Verify -> Set Password
+      //  Forgot flow: Verify -> Set Password
       if (mode === "forgot") {
         const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
         const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
@@ -55,7 +55,7 @@ export default function VerifyCodePage() {
         return;
       }
 
-      // ✅ Signup flow: (no back button) token => auto-login => home/next
+      //  Signup flow: (no back button) token => auto-login => home/next
       if (data?.token && data?.user) {
         setSession({ token: data.token, user: data.user });
         const finalNext = getNextFromSearchParams(searchParams);

@@ -43,7 +43,7 @@ export default function ShareWithBanksPage() {
       <PageShell className="py-8">
         <PageHeaderBar title="Share with Partner Banks?" onBack={() => navigate("/precheck")} />
 
-        <div className="mt-6 mx-auto w-full max-w-[760px] rounded-2xl border border-[#EDEDED] bg-white p-5 sm:p-8">
+        <div className="mt-6 mx-auto w-full max-w-190 rounded-2xl border border-[#EDEDED] bg-white p-5 sm:p-8">
           <div className="text-[11px] text-[#9CA3AF]">
             We'll share your financial summary with our trusted partner banks to help you get the best mortgage offers.
           </div>

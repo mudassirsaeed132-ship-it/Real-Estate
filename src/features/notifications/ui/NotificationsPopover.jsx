@@ -20,7 +20,7 @@ function TabButton({ active, children, onClick }) {
       ].join(" ")}
     >
       {children}
-      {active ? <span className="absolute left-4 right-4 -bottom-[1px] h-[2px] bg-[#111827]" /> : null}
+      {active ? <span className="absolute left-4 right-4 -bottom-px h-0.5 bg-[#111827]" /> : null}
     </button>
   );
 }
@@ -57,8 +57,8 @@ export default function NotificationsPopover({ open, onClose }) {
       role="dialog"
       aria-modal="false"
       className={[
-        "absolute right-0 top-full mt-3 z-[80]",
-        "w-[420px] lg:w-[460px] xl:w-[480px]",
+        "absolute right-0 top-full mt-3 z-80",
+        "w-105 lg:w-115 xl:w-120",
         "max-w-[calc(100vw-24px)]",
         "overflow-hidden rounded-2xl border border-[#EDEDED] bg-white shadow-xl",
         "max-sm:fixed max-sm:left-3 max-sm:right-3 max-sm:top-16 max-sm:mt-0",

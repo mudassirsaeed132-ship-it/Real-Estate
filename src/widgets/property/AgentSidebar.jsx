@@ -9,7 +9,7 @@ export default function AgentSidebar({
   agent,
   reviews = [],
   propertyId,
-  bookingPurpose = "rent", // ✅ "rent" | "sale"
+  bookingPurpose = "rent", //  "rent" | "sale"
 }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);

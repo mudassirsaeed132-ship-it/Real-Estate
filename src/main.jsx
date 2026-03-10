@@ -13,7 +13,7 @@ async function enableMocks() {
     },
   });
 
-  // ✅ Ensure SW is ready
+  //  Ensure SW is ready
   if ("serviceWorker" in navigator) {
     await navigator.serviceWorker.ready;
 
@@ -36,7 +36,7 @@ async function enableMocks() {
   const hasApiBase = Boolean(import.meta.env.VITE_API_BASE_URL);
   const isDev = import.meta.env.DEV;
 
-  // ✅ Default behavior:
+  //  Default behavior:
   // - DEV: MSW ON if API base not set (or force enable)
   // - PROD: MSW OFF unless explicitly forced
   const shouldMock = (isDev && !forceDisable && !hasApiBase) || (forceEnable && !forceDisable);

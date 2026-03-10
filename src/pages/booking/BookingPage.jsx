@@ -18,7 +18,7 @@ export default function BookingPage() {
 
   const [property, setProperty] = useState(null);
 
-  // ✅ model-driven state
+  //  model-driven state
   const booking = useBookingForm();
   const offer = useOfferForm();
 

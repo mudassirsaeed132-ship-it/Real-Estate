@@ -39,7 +39,7 @@ export default function ViewedPropertiesPage() {
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-[72px] w-full rounded-2xl" />
+                <Skeleton key={i} className="h-18 w-full rounded-2xl" />
               ))}
             </div>
           ) : (

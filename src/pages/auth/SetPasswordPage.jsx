@@ -36,14 +36,14 @@ export default function SetPasswordPage() {
         mode,
       });
 
-      // ✅ Forgot flow: Set Password -> Login
+      //  Forgot flow: Set Password -> Login
       if (mode === "forgot") {
         const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
         navigate(`/auth/login?role=${encodeURIComponent(role)}${nextParam}`, { replace: true });
         return;
       }
 
-      // ✅ Signup flow (your existing): Set Password -> Verify Code
+      //  Signup flow (your existing): Set Password -> Verify Code
       const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
       const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
       navigate(

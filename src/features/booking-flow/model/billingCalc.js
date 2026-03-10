@@ -58,7 +58,7 @@ export function buildBillingOverview({
       nightsLabel: `${nights} night${nights > 1 ? "s" : ""}`,
     },
     breakdown: [
-      // ✅ EXACT label like UI: "$150 × 1 night"
+      //  EXACT label like UI: "$150 × 1 night"
       {
         label: `$${Number(nightlyRate)} × ${nights} night${nights > 1 ? "s" : ""}`,
         value: formatMoneyUSD(base),

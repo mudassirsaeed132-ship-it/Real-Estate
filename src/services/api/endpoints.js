@@ -5,7 +5,7 @@ export const ENDPOINTS = {
   home: `${API_BASE_URL}/api/home`,
   properties: `${API_BASE_URL}/api/properties`,
 
-  // ✅ auth
+  //  auth
   authLogin: `${API_BASE_URL}/api/auth/login`,
   authRegister: `${API_BASE_URL}/api/auth/register`,
   authForgotPassword: `${API_BASE_URL}/api/auth/forgot-password`,
@@ -13,7 +13,7 @@ export const ENDPOINTS = {
   authVerifyCode: `${API_BASE_URL}/api/auth/verify-code`,
   authSetPassword: `${API_BASE_URL}/api/auth/set-password`,
 
-  // ✅ profile
+  //  profile
   profile: `${API_BASE_URL}/api/profile`,
   profileSettings: `${API_BASE_URL}/api/profile/settings`,
   profileSavedSearches: `${API_BASE_URL}/api/profile/saved-searches`,
@@ -21,10 +21,10 @@ export const ENDPOINTS = {
   profileFavorites: `${API_BASE_URL}/api/profile/favorites`,
   profileBookings: `${API_BASE_URL}/api/profile/bookings`,
 
-  // ✅ notifications
+  // notifications
   notifications: `${API_BASE_URL}/api/notifications`,
 
-  // ✅ financial precheck
+  //  financial precheck
   precheckRecent: `${API_BASE_URL}/api/precheck/recent`,
   precheckSearch: `${API_BASE_URL}/api/precheck/search`,
   precheckCalculate: `${API_BASE_URL}/api/precheck/calculate`,

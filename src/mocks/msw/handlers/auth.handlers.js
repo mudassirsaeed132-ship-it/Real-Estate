@@ -28,7 +28,7 @@ function makeChallengeId() {
 }
 
 export const authHandlers = [
-  // ✅ LOGIN
+  //  LOGIN
   http.post(LOGIN, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -59,7 +59,7 @@ export const authHandlers = [
     return HttpResponse.json({ token: makeToken(user), user });
   }),
 
-  // ✅ REGISTER: returns challengeId (no token) for signup flow
+  //  REGISTER: returns challengeId (no token) for signup flow
   http.post(REGISTER, async ({ request }) => {
     await delay(350);
     const body = await request.json();
@@ -84,7 +84,7 @@ export const authHandlers = [
     return HttpResponse.json({ challengeId, email });
   }),
 
-  // ✅ FORGOT PASSWORD: returns challengeId for reset flow
+  //  FORGOT PASSWORD: returns challengeId for reset flow
   http.post(FORGOT_PASSWORD, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -109,7 +109,7 @@ export const authHandlers = [
     return HttpResponse.json({ challengeId, email });
   }),
 
-  // ✅ SET PASSWORD (works for both signup/forgot)
+  //  SET PASSWORD (works for both signup/forgot)
   http.post(SET_PASSWORD, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -129,7 +129,7 @@ export const authHandlers = [
     return HttpResponse.json({ ok: true, mode: mode || record?.type || "unknown" });
   }),
 
-  // ✅ VERIFY CODE
+  //  VERIFY CODE
   http.post(VERIFY_CODE, async ({ request }) => {
     await delay(300);
     const body = await request.json();
@@ -159,7 +159,7 @@ export const authHandlers = [
     return HttpResponse.json({ token: makeToken(finalUser), user: finalUser });
   }),
 
-  // ✅ RESEND CODE
+  //  RESEND CODE
   http.post(RESEND_CODE, async () => {
     await delay(200);
     return HttpResponse.json({ ok: true });

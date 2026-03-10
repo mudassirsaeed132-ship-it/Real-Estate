@@ -15,7 +15,7 @@ function TabButton({ active, children, onClick }) {
       ].join(" ")}
     >
       {children}
-      <div className={active ? "mt-3 h-[2px] w-full bg-[#111827]" : "mt-3 h-[2px] w-full bg-transparent"} />
+      <div className={active ? "mt-3 h-0.5 w-full bg-[#111827]" : "mt-3 h-0.5 w-full bg-transparent"} />
     </button>
   );
 }
@@ -25,7 +25,7 @@ function PickRow({ item, onPick }) {
     <button
       type="button"
       onClick={() => onPick(item)}
-      className="w-full rounded-2xl border border-[#EDEDED] bg-white px-4 py-4 text-left hover:bg-black/[0.02]"
+      className="w-full rounded-2xl border border-[#EDEDED] bg-white px-4 py-4 text-left hover:bg-black/2"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">

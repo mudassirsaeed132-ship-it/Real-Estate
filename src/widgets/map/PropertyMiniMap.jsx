@@ -27,7 +27,7 @@ export default function PropertyMiniMap({ lat, lng }) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-[#EDEDED]">
-      <div className="h-[170px] w-full">
+      <div className="h-42.5 w-full">
         <MapContainer center={center} zoom={13} className="h-full w-full">
           <TileLayer
             attribution="&copy; OpenStreetMap"

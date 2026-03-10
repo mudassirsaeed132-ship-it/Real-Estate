@@ -32,7 +32,7 @@ export default function CompareMaxSelectedModal({ open, onClose, onManage }) {
           Maximum Properties Selected
         </div>
 
-        <div className="mt-3 max-w-[520px] text-[14px] leading-6 text-[#6B7280] sm:text-[15px]">
+        <div className="mt-3 max-w-130 text-[14px] leading-6 text-[#6B7280] sm:text-[15px]">
           You can compare up to {COMPARE_LIMIT} properties at once. Remove a property from
           your comparison to add a new one.
         </div>
@@ -40,7 +40,7 @@ export default function CompareMaxSelectedModal({ open, onClose, onManage }) {
         <button
           type="button"
           onClick={handlePrimary}
-          className="mt-8 h-12 w-full max-w-[520px] rounded-2xl bg-[#D66355] text-[14px] font-semibold text-white hover:bg-[#C85A4E]"
+          className="mt-8 h-12 w-full max-w-130 rounded-2xl bg-[#D66355] text-[14px] font-semibold text-white hover:bg-[#C85A4E]"
         >
           Start Comparing
         </button>

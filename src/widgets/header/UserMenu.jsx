@@ -26,7 +26,7 @@ export default function UserMenu() {
 
   const isSeller = String(role) === ROLES.SELLER || String(user?.role) === ROLES.SELLER;
 
-  // ✅ show SELL only while notifications are open (and only seller)
+  //  show SELL only while notifications are open (and only seller)
   const showSell = isAuthed && notifOpen;
 
   const uiUser = useMemo(() => {
@@ -87,7 +87,7 @@ export default function UserMenu() {
             aria-label="Favorites"
             onClick={() => go("/profile/favorites")}
           >
-            <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
+            <Heart className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-[#6B7280]" />
           </IconButton>
 
           {/* Message */}
@@ -99,7 +99,7 @@ export default function UserMenu() {
             <img
               src={messageIcon}
               alt=""
-              className="h-4 w-4 sm:h-[18px] sm:w-[18px]"
+              className="h-4 w-4 sm:h-4.5 sm:w-4.5"
               draggable={false}
             />
           </IconButton>
@@ -114,13 +114,13 @@ export default function UserMenu() {
                 setNotifOpen((v) => !v);
               }}
             >
-              <Bell className="h-4 w-4 sm:h-[18px] sm:w-[18px] text-[#6B7280]" />
+              <Bell className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-[#6B7280]" />
             </IconButton>
 
             <NotificationsPopover open={notifOpen} onClose={() => setNotifOpen(false)} />
           </div>
 
-          {/* ✅ Profile (avatar) FIRST */}
+          {/*  Profile (avatar) FIRST */}
           <div className="relative">
             <button
               type="button"
@@ -183,7 +183,7 @@ export default function UserMenu() {
                 <button
                   type="button"
                   onClick={() => go("/settings/privacy-controls")}
-                  className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/[0.02]"
+                  className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/2"
                   role="menuitem"
                 >
                   <span className="text-[15px] sm:text-[16px] font-semibold text-[#111827]">
@@ -200,7 +200,7 @@ export default function UserMenu() {
                     clearSession();
                     navigate("/", { replace: true });
                   }}
-                  className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/[0.02]"
+                  className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/2"
                   role="menuitem"
                 >
                   <span className="text-[15px] sm:text-[16px] font-semibold text-[#111827]">
@@ -212,7 +212,7 @@ export default function UserMenu() {
             ) : null}
           </div>
 
-          {/* ✅ SELL AFTER avatar/profile (matches Figma) */}
+          {/*  SELL AFTER avatar/profile (matches Figma) */}
           {showSell ? (
             <Button
               variant="outline"

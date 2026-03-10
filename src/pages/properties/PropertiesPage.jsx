@@ -122,7 +122,7 @@ export default function PropertiesPage() {
                 key={i}
                 className="min-w-0 rounded-2xl border border-[#EDEDED] bg-white p-4"
               >
-                <Skeleton className="aspect-[4/3] w-full" />
+                <Skeleton className="aspect-4/3 w-full" />
                 <Skeleton className="mt-4 h-4 w-3/4" />
                 <Skeleton className="mt-2 h-4 w-2/3" />
                 <Skeleton className="mt-4 h-10 w-full" />
@@ -148,7 +148,7 @@ export default function PropertiesPage() {
             <Suspense
               fallback={
                 <div className="min-w-0 rounded-2xl border border-[#EDEDED] bg-white p-4">
-                  <Skeleton className="h-[420px] md:h-[520px] w-full rounded-xl" />
+                  <Skeleton className="h-105 md:h-130 w-full rounded-xl" />
                 </div>
               }
             >
@@ -161,7 +161,7 @@ export default function PropertiesPage() {
           </div>
         )}
 
-        {/* ✅ Pagination UI removed (Page X of Y + Previous/Next) */}
+        {/*  Pagination UI removed (Page X of Y + Previous/Next) */}
       </div>
     </PageShell>
   );

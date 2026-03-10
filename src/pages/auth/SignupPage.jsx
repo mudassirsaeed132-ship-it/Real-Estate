@@ -43,7 +43,7 @@ export default function SignupPage() {
       const email = String(payload.email || "").trim();
       const cid = data?.challengeId ? String(data.challengeId) : "";
 
-      // ✅ Figma flow: Signup -> Set Password
+      //  Figma flow: Signup -> Set Password
       const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
       const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
 

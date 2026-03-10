@@ -62,7 +62,7 @@ export default function PropertiesMap({ items = [] }) {
     ? [points[0].lat, points[0].lng]
     : [30.3753, 69.3451]; // Pakistan fallback
 
-  // ✅ memoize marker icons to avoid recreation on re-render
+  //  memoize marker icons to avoid recreation on re-render
   const iconById = useMemo(() => {
     const m = new Map();
     for (const p of points) {
@@ -74,7 +74,7 @@ export default function PropertiesMap({ items = [] }) {
 
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#EDEDED] bg-white">
-      <div className="h-[420px] md:h-[520px] w-full min-w-0">
+      <div className="h-105 md:h-130 w-full min-w-0">
         <MapContainer
           center={center}
           zoom={12}

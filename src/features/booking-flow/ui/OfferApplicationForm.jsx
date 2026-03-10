@@ -41,7 +41,7 @@ export default function OfferApplicationForm({
         <textarea
           value={intro}
           onChange={(e) => onIntroChange?.(e.target.value)}
-          className="min-h-[180px] w-full resize-none bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
+          className="min-h-45 w-full resize-none bg-transparent text-[13px] text-[#111827] outline-none placeholder:text-[#9CA3AF]"
           placeholder="why are you interested in property?"
         />
       </div>

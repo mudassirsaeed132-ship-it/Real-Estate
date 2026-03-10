@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
       const nextParam = next ? `&next=${safeEncodeNext(next)}` : "";
       const cidParam = cid ? `&cid=${encodeURIComponent(cid)}` : "";
 
-      // ✅ forgot flow => verify-code (with mode=forgot)
+      //  forgot flow => verify-code (with mode=forgot)
       navigate(
         `/auth/verify-code?mode=forgot&role=${encodeURIComponent(role)}&email=${encodeURIComponent(
           email

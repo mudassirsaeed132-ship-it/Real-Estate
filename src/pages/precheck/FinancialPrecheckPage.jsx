@@ -26,7 +26,7 @@ function PropertyPriceCard({ onContinue }) {
       </div>
 
       <div className="mt-4 overflow-hidden rounded-2xl bg-[#F3F4F6]">
-        <div className="aspect-[16/7] w-full">
+        <div className="aspect-16/7 w-full">
           <img src={selected.image} alt="" className="h-full w-full object-cover" draggable={false} />
         </div>
       </div>

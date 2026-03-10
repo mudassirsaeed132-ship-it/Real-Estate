@@ -13,7 +13,7 @@ export default function MapPropertyPopover({ item }) {
 
   const isSelected = selectedIds.some((id) => String(id) === String(item.id));
 
-  // ✅ keep payload consistent with PropertyCard
+  // keep payload consistent with PropertyCard
   const compareItem = useMemo(
     () => ({
       id: item.id,
@@ -53,10 +53,10 @@ export default function MapPropertyPopover({ item }) {
   return (
     <div
       className={cn(
-        "relative w-[260px] overflow-hidden rounded-2xl bg-white",
+        "relative w-65 overflow-hidden rounded-2xl bg-white",
         isSelected ? "ring-2 ring-[#D66355]" : "ring-1 ring-[#EDEDED]"
       )}
-      // ✅ whole card toggles in compare mode
+      //  whole card toggles in compare mode
       onClick={compareEnabled ? toggle : undefined}
       role={compareEnabled ? "button" : undefined}
       tabIndex={compareEnabled ? 0 : -1}
@@ -79,7 +79,7 @@ export default function MapPropertyPopover({ item }) {
         />
       ) : null}
 
-      <div className="h-[140px] w-full overflow-hidden rounded-2xl bg-[#F3F4F6]">
+      <div className="h-35 w-full overflow-hidden rounded-2xl bg-[#F3F4F6]">
         {item.images?.[0] ? (
           <img
             src={item.images[0]}

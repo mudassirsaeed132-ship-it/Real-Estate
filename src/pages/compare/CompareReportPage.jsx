@@ -52,7 +52,7 @@ export default function CompareReportPage() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
 
-  // ✅ When entering report, turn compare mode OFF (keep selection)
+  //  When entering report, turn compare mode OFF (keep selection)
   useEffect(() => {
     compareActions.stop({ clear: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,13 +141,13 @@ export default function CompareReportPage() {
             <div key={i} className="min-w-0">
               {loading ? (
                 <div className="rounded-2xl border border-[#EDEDED] bg-white p-4">
-                  <Skeleton className="aspect-[4/3] w-full rounded-xl" />
+                  <Skeleton className="aspect-4/3 w-full rounded-xl" />
                   <Skeleton className="mt-4 h-4 w-2/3" />
                   <Skeleton className="mt-2 h-4 w-1/2" />
                 </div>
               ) : it ? (
                 <div className="relative overflow-hidden rounded-2xl border border-[#EDEDED] bg-white">
-                  <div className="relative aspect-[4/3] bg-[#F3F4F6]">
+                  <div className="relative aspect-4/3 bg-[#F3F4F6]">
                     <img
                       src={it?.images?.[0] || ""}
                       alt=""
@@ -185,7 +185,7 @@ export default function CompareReportPage() {
         <div className="mt-8 space-y-6">
           <TableCard title="Basic Information">
             <div className="overflow-x-auto">
-              <div className="min-w-[900px] rounded-2xl bg-[#F3F4F6] p-5">
+              <div className="min-w-225 rounded-2xl bg-[#F3F4F6] p-5">
                 <div className="space-y-2">
                   <MatrixRow
                     label="Price"
@@ -226,7 +226,7 @@ export default function CompareReportPage() {
 
           <TableCard title="AI’s Value Insights">
             <div className="overflow-x-auto">
-              <div className="min-w-[900px] rounded-2xl bg-[#F3F4F6] p-5">
+              <div className="min-w-225 rounded-2xl bg-[#F3F4F6] p-5">
                 <MatrixRow
                   label="Value Assessment"
                   cols={ai.map((x, idx) => (
@@ -252,7 +252,7 @@ export default function CompareReportPage() {
 
           <TableCard title="Features & Amenities">
             <div className="overflow-x-auto">
-              <div className="min-w-[900px] rounded-2xl bg-[#F3F4F6] p-5">
+              <div className="min-w-225 rounded-2xl bg-[#F3F4F6] p-5">
                 <div className="space-y-2">
                   {featureRows.map((r, ri) => (
                     <MatrixRow
@@ -287,7 +287,7 @@ export default function CompareReportPage() {
 
           <TableCard title="Documents & Trusts">
             <div className="overflow-x-auto">
-              <div className="min-w-[900px] rounded-2xl bg-[#F3F4F6] p-5">
+              <div className="min-w-225 rounded-2xl bg-[#F3F4F6] p-5">
                 <MatrixRow
                   label="Owner Verified"
                   cols={cols.map((it, ci) =>

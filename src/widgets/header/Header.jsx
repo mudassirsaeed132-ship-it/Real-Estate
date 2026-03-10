@@ -19,7 +19,7 @@ export default function Header() {
 
     setVar();
 
-    // ✅ auto update on resize / content change
+    //  auto update on resize / content change
     const ro = new ResizeObserver(() => setVar());
     ro.observe(el);
 
@@ -39,17 +39,17 @@ export default function Header() {
       <PageShell className="py-3">
         {/* Row 1 */}
         <div className="flex items-center gap-3 min-w-0">
-          {/* ✅ SPA friendly (no full reload) */}
+          {/*  SPA friendly (no full reload) */}
           <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Home">
             <img
               src={logo}
               alt="Real Estate"
-              className="h-9 sm:h-10 w-auto max-w-[160px] object-contain"
+              className="h-9 sm:h-10 w-auto max-w-40 object-contain"
             />
           </Link>
 
           <div className="hidden lg:flex flex-1 min-w-0 items-center">
-            <div className="w-full min-w-0 max-w-[760px]">
+            <div className="w-full min-w-0 max-w-190">
               <HeaderSearch showCta />
             </div>
           </div>

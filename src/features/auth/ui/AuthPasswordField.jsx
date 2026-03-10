@@ -27,7 +27,7 @@ export default function AuthPasswordField({
           autoComplete={autoComplete}
           placeholder={placeholder}
           className={[
-            "w-full h-[48px] rounded-[10px] border px-4 pr-12 text-[14px] text-[#111827]",
+            "w-full h-12 rounded-[10px] border px-4 pr-12 text-[14px] text-[#111827]",
             "border-[#E5E7EB] bg-white",
             "focus:outline-none focus:ring-2 focus:ring-[#D66355]/25 focus:border-[#D66355]",
             error ? "border-red-400 focus:border-red-500 focus:ring-red-200" : "",

@@ -68,7 +68,7 @@ export default function RolePicker({ value, onChange }) {
                 {isSelected && !shouldReduceMotion ? (
                   <m.div
                     layoutId="role-selection-ring"
-                    className="pointer-events-none absolute left-1/2 top-0 h-[220px] w-full max-w-[280px] -translate-x-1/2 rounded-[18px] border-2 border-[#D66355] shadow-[0_10px_30px_rgba(214,99,85,0.12)]"
+                    className="pointer-events-none absolute left-1/2 top-0 h-55 w-full max-w-70 -translate-x-1/2 rounded-[18px] border-2 border-[#D66355] shadow-[0_10px_30px_rgba(214,99,85,0.12)]"
                     transition={{
                       type: "spring",
                       stiffness: 380,
@@ -77,7 +77,7 @@ export default function RolePicker({ value, onChange }) {
                   />
                 ) : null}
 
-                <div className="relative z-[1] w-full">
+                <div className="relative z-1 w-full">
                   <RoleCard
                     selected={shouldReduceMotion ? isSelected : false}
                     title={item.title}

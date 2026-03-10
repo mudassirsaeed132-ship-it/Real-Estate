@@ -77,7 +77,7 @@ function BookingRow({ item }) {
 }
 
 function KeyValueMobile({ rows = [] }) {
-  // ✅ mobile: stack label/value so nothing cuts
+  //  mobile: stack label/value so nothing cuts
   return (
     <div className="mt-4 space-y-3 text-[11px]">
       {rows.map((r) => (
@@ -91,7 +91,7 @@ function KeyValueMobile({ rows = [] }) {
 }
 
 function KeyValueDesktop({ rows = [] }) {
-  // ✅ desktop: 2-column like figma
+  //  desktop: 2-column like figma
   return (
     <div className="mt-4 grid grid-cols-2 gap-3 text-[11px]">
       <div className="space-y-2 text-[#9CA3AF]">
@@ -126,7 +126,7 @@ function BookingCard({ item }) {
     <div className="rounded-2xl border border-[#EDEDED] bg-white p-4 overflow-hidden min-w-0">
       {/* Image */}
       <div className="overflow-hidden rounded-2xl bg-[#F3F4F6]">
-        <div className="aspect-[16/7] w-full">
+        <div className="aspect-16/7 w-full">
           <img
             src={item.image}
             alt=""
@@ -147,14 +147,14 @@ function BookingCard({ item }) {
           </div>
         </div>
 
-        {/* ✅ FIX: tags wrap on mobile (no cutting) */}
+        {/* FIX: tags wrap on mobile (no cutting) */}
         <div className="flex flex-wrap items-center gap-2">
           <Tag label={item.tagLeft || "Rented"} tone="red" />
           <Tag label={item.tagRight || "Paid"} tone="green" />
         </div>
       </div>
 
-      {/* ✅ FIX: mobile stack rows, desktop keep original */}
+      {/* FIX: mobile stack rows, desktop keep original */}
       <div className="block sm:hidden">
         <KeyValueMobile rows={rows} />
       </div>
@@ -239,13 +239,13 @@ export default function BookingsPage() {
             status === "completed" ? (
               <div className="space-y-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[84px] w-full rounded-2xl" />
+                  <Skeleton key={i} className="h-21 w-full rounded-2xl" />
                 ))}
               </div>
             ) : (
               <div className="grid gap-6 md:grid-cols-2">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[320px] w-full rounded-2xl" />
+                  <Skeleton key={i} className="h-80 w-full rounded-2xl" />
                 ))}
               </div>
             )

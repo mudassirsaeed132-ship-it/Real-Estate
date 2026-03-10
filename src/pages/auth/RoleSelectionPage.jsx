@@ -73,7 +73,7 @@ export default function RoleSelectionPage() {
           </m.div>
 
           <m.div variants={itemVariants} className="flex justify-center">
-            <div className="w-full max-w-[760px]">
+            <div className="w-full max-w-190">
               <AuthPrimaryButton
                 disabled={!role}
                 onClick={() => {

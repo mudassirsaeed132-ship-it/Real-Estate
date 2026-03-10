@@ -103,7 +103,7 @@ export default function QuickFiltersRow({
   const selectionModalOpen = useCompareStore((s) => s.selectionModalOpen);
   const maxSelectedModalOpen = useCompareStore((s) => s.maxSelectedModalOpen);
 
-  // ✅ IMPORTANT: use store items (works even across pagination/map)
+  //  IMPORTANT: use store items (works even across pagination/map)
   const itemsById = useCompareStore((s) => s.selectedItemsById);
 
   const compareLabel =
@@ -112,7 +112,7 @@ export default function QuickFiltersRow({
       : "Compare Properties";
 
   const onCompareClick = () => {
-    // ✅ Store decides:
+    //  Store decides:
     // - if compare off & nothing selected -> Start modal
     // - else -> Selection modal
     compareActions.openSelectionModal();

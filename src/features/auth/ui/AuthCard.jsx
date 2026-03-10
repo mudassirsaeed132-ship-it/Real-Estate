@@ -19,13 +19,13 @@ export default function AuthCard({
           <img
             src={IMG.authLogo.full}
             alt="Real Estate"
-            className="h-[64px] sm:h-[78px] w-auto"
+            className="h-16 sm:h-19.5 w-auto"
             draggable={false}
           />
         </div>
       ) : null}
 
-      <div className="mx-auto w-full max-w-[560px]">
+      <div className="mx-auto w-full max-w-140">
         {top ? (
           <div className={["mt-10", isLeft ? "text-left" : "text-center"].join(" ")}>
             {top}

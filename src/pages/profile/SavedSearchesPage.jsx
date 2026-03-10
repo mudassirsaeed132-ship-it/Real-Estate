@@ -36,14 +36,14 @@ export default function SavedSearchesPage() {
           onBack={() => navigate("/profile")}
           right={
             <div className="flex items-center overflow-hidden rounded-xl border border-[#EDEDED] bg-[#F7E5E2]">
-              {/* ✅ active tab (Saved Searches) */}
+              {/*  active tab (Saved Searches) */}
               <IconButton className="h-10 w-10" aria-label="Saved Searches">
                 <Bookmark className="h-4 w-4 text-[#D66355]" />
               </IconButton>
 
               <div className="h-6 w-px bg-[#EDEDED]" />
 
-              {/* ✅ go to favourites */}
+              {/*  go to favourites */}
               <IconButton
                 className="h-10 w-10"
                 aria-label="Favourites"
@@ -59,7 +59,7 @@ export default function SavedSearchesPage() {
           <div className="space-y-4">
             {loading
               ? Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-[72px] w-full rounded-2xl" />
+                  <Skeleton key={i} className="h-18 w-full rounded-2xl" />
                 ))
               : items.map((it) => (
                   <ListRow

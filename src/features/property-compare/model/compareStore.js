@@ -139,7 +139,7 @@ export const compareActions = {
     });
   },
 
-  // ✅ FIXED: if compare OFF but we already have selections -> open selection modal
+  //  FIXED: if compare OFF but we already have selections -> open selection modal
   openSelectionModal() {
     if (!state.enabled && state.selectedIds.length === 0) {
       compareActions.openStartModal();

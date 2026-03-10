@@ -23,7 +23,7 @@ export default function PropertiesTopSearchBar({ params, setParam, onOpenFilters
   return (
     <div className="mt-5 flex justify-center min-w-0">
       <div className="w-full max-w-245 min-w-0">
-        {/* ✅ Desktop: one row | Mobile: 2 rows (query + actions attached) */}
+        {/*  Desktop: one row | Mobile: 2 rows (query + actions attached) */}
         <div className="grid min-w-0 gap-3 md:grid-cols-[260px_minmax(0,1fr)_120px_44px] md:items-center">
           {/* Location */}
           <div className={`flex min-w-0 items-center gap-2 ${field} ${pad}`}>
@@ -46,7 +46,7 @@ export default function PropertiesTopSearchBar({ params, setParam, onOpenFilters
               onChange={(e) => setDraftQ(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder="House for Sale"
-              className={`w-full min-w-0 ${field} ${pad} text-[13px]! !text-[#111827]`}
+              className={`w-full min-w-0 ${field} ${pad} text-[13px]! text-[#111827]!`}
             />
 
             {/* Mobile-only action row (keeps filter icon aligned, no overflow) */}

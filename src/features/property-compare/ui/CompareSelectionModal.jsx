@@ -42,7 +42,7 @@ export default function CompareSelectionModal({
       panelClassName="rounded-2xl"
       bodyClassName="px-5 py-6 sm:px-10 sm:py-10"
     >
-      <div className="mx-auto w-full max-w-[520px]">
+      <div className="mx-auto w-full max-w-130">
         <div className="space-y-4">
           {selectedIds.length ? (
             selectedIds.map((id) => {

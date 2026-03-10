@@ -19,7 +19,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-// ✅ your Figma icons (assets)
+//  your Figma icons (assets)
 import forSaleIcon from "../../assets/icons/for-sale.svg";
 import shareIcon from "../../assets/icons/share.svg";
 
@@ -78,7 +78,7 @@ function FactsItem({ icon: Icon, label, value }) {
 
       <div className="min-w-0">
         <div className="text-xs text-[#6B7280]">{label}</div>
-        <div className="text-sm font-semibold text-[#111827] break-words">{value}</div>
+        <div className="text-sm font-semibold text-[#111827] wrap-break-word">{value}</div>
       </div>
     </div>
   );
@@ -171,7 +171,7 @@ export default function PropertyDetailPage() {
         {loading ? (
           <div className="space-y-6">
             <div className="full-bleed">
-              <Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />
+              <Skeleton className="h-55 sm:h-85 lg:h-130 w-full" />
             </div>
           </div>
         ) : (
@@ -179,7 +179,7 @@ export default function PropertyDetailPage() {
             {/* Gallery full-bleed */}
             <div className="full-bleed">
               <Suspense
-                fallback={<Skeleton className="h-[220px] sm:h-[340px] lg:h-[520px] w-full" />}
+                fallback={<Skeleton className="h-55 sm:h-85 lg:h-130 w-full" />}
               >
                 <PropertyGalleryHero images={imgs} />
               </Suspense>
@@ -220,18 +220,18 @@ export default function PropertyDetailPage() {
                 <div className="w-full min-w-0 overflow-hidden rounded-2xl border border-[#EDEDED] bg-white p-4 sm:p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-lg font-semibold text-[#111827] break-words">
+                      <div className="text-lg font-semibold text-[#111827] wrap-break-word">
                         {item?.title || "Modern Luxury Apartment"}
                       </div>
 
-                      <div className="mt-1 text-sm text-[#6B7280] break-words">
+                      <div className="mt-1 text-sm text-[#6B7280] wrap-break-word">
                         {item?.address || "123 Main Street, San Francisco, CA 94102"}
                       </div>
 
                       <div className="mt-2 text-sm font-semibold text-[#111827]">$4,500/month</div>
                     </div>
 
-                    {/* ✅ status icon */}
+                    {/*  status icon */}
                     <div className="inline-flex shrink-0 items-center gap-2">
                       <img src={forSaleIcon} alt="" className="h-5 w-5" draggable={false} />
                       <span className="text-sm font-semibold text-[#111827]">{statusLabel}</span>
@@ -249,7 +249,7 @@ export default function PropertyDetailPage() {
                 </div>
 
                 <Section title="Description" defaultOpen>
-                  <div className="space-y-3 text-sm leading-6 text-[#6B7280] break-words">
+                  <div className="space-y-3 text-sm leading-6 text-[#6B7280] wrap-break-word">
                     <p>Welcome to this stunning modern apartment in the heart of downtown...</p>
                     <p>
                       The open-concept layout features a gourmet kitchen with high-end stainless steel...
@@ -260,7 +260,7 @@ export default function PropertyDetailPage() {
 
                 <Section title="Location Address" defaultOpen>
                   <div className="w-full min-w-0 overflow-hidden rounded-xl border border-[#EDEDED]">
-                    <div className="h-[210px] sm:h-[260px] lg:h-[280px] w-full">
+                    <div className="h-52.5 sm:h-65 lg:h-70 w-full">
                       <Suspense fallback={<Skeleton className="h-full w-full" />}>
                         <PropertyMiniMap lat={item?.lat} lng={item?.lng} />
                       </Suspense>

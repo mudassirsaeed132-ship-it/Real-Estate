@@ -42,7 +42,7 @@ export default function ChatLayout({
       </div>
 
       {/* Thread + Composer */}
-      <div className={cn("flex min-h-[420px] flex-col")}>
+      <div className={cn("flex min-h-105 flex-col")}>
         <MessageList messages={chat?.messages || []} meAvatar={meAvatar} />
         <MessageComposer onSend={onSend} />
       </div>

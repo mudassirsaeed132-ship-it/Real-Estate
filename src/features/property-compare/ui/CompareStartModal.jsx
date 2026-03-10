@@ -23,14 +23,14 @@ export default function CompareStartModal({ open, onClose, onStart }) {
           Compare Properties
         </div>
 
-        <div className="mt-3 max-w-[420px] text-[14px] leading-6 text-[#6B7280] sm:text-[15px]">
+        <div className="mt-3 max-w-105 text-[14px] leading-6 text-[#6B7280] sm:text-[15px]">
           You can compare up to 3 properties. See what’s best for you.
         </div>
 
         <button
           type="button"
           onClick={onStart}
-          className="mt-8 h-12 w-full max-w-[420px] rounded-2xl bg-[#D66355] text-[14px] font-semibold text-white hover:bg-[#C85A4E]"
+          className="mt-8 h-12 w-full max-w-105 rounded-2xl bg-[#D66355] text-[14px] font-semibold text-white hover:bg-[#C85A4E]"
         >
           Start Comparing
         </button>

@@ -33,7 +33,7 @@ export default function BillingOverviewModal({ open, onClose, overview }) {
     <Modal
       open={open}
       onClose={onClose}
-      // ✅ smaller + responsive like Figma
+      //  smaller + responsive like Figma
       size="md"
       height="normal"
       overlayClassName="bg-black/40"

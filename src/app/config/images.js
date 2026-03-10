@@ -7,6 +7,6 @@ export const IMG = {
     full: logoFull, // header/topbar logo
   },
   authLogo: {
-    full: authLogoFull, // ✅ auth pages logo
+    full: authLogoFull, //  auth pages logo
   },
 };

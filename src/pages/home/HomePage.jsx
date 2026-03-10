@@ -149,7 +149,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* ✅ REMOVED: Jump links row (New this week | Nearby | For you) */}
+          {/*  REMOVED: Jump links row (New this week | Nearby | For you) */}
         </Motion.div>
       </PageShell>
 
@@ -187,7 +187,7 @@ export default function HomePage() {
           >
             <div className="text-white min-w-0">
               <h3 className="text-2xl font-semibold">Know your budget in 3 minutes</h3>
-              <p className="mt-2 max-w-[640px] text-sm text-white/80">
+              <p className="mt-2 max-w-160 text-sm text-white/80">
                 Get a financing pre-check certificate from our partner banks. Increases your chances
                 of getting the property by 3x.
               </p>

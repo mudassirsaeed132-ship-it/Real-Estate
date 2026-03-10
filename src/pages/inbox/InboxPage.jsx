@@ -18,7 +18,7 @@ function TabButton({ active, children, onClick }) {
     >
       <span className={active ? "text-[#111827]" : "text-[#9CA3AF]"}>{children}</span>
       {active ? (
-        <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111827]" />
+        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#111827]" />
       ) : null}
     </button>
   );
@@ -140,7 +140,7 @@ export default function InboxPage() {
                   onSend={onSend}
                 />
               ) : (
-                <div className="grid min-h-[520px] place-items-center rounded-2xl border border-dashed border-[#EDEDED] bg-white p-6 text-sm text-[#9CA3AF]">
+                <div className="grid min-h-130 place-items-center rounded-2xl border border-dashed border-[#EDEDED] bg-white p-6 text-sm text-[#9CA3AF]">
                   Select a conversation
                 </div>
               )}

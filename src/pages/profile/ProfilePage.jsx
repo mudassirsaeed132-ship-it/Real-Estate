@@ -95,12 +95,12 @@ export default function ProfilePage() {
           {loading ? (
             <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
               <div className="space-y-4">
-                <Skeleton className="h-[140px] w-[140px] rounded-full" />
-                <Skeleton className="h-10 w-[160px] rounded-full" />
+                <Skeleton className="h-35 w-35 rounded-full" />
+                <Skeleton className="h-10 w-40 rounded-full" />
               </div>
               <div className="space-y-4">
-                <Skeleton className="h-8 w-[260px]" />
-                <Skeleton className="h-4 w-[220px]" />
+                <Skeleton className="h-8 w-65" />
+                <Skeleton className="h-4 w-55" />
                 <Skeleton className="h-4 w-[320px]" />
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
                 <img
                   src={user?.avatar}
                   alt=""
-                  className="h-[140px] w-[140px] rounded-full object-cover"
+                  className="h-35 w-35 rounded-full object-cover"
                   draggable={false}
                 />
                 <Button className="h-10 px-6 bg-[#D66355] text-white hover:bg-[#C85A4E]">

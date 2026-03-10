@@ -16,7 +16,7 @@ export default function ConversationList({ items = [], activeId, onSelect }) {
             className={cn(
               "w-full text-left",
               "border-b border-[#F3F4F6] last:border-b-0",
-              active ? "bg-[#F7E5E2]" : "bg-white hover:bg-black/[0.02]"
+              active ? "bg-[#F7E5E2]" : "bg-white hover:bg-black/2"
             )}
           >
             <div className="px-5 py-4">
@@ -39,7 +39,7 @@ export default function ConversationList({ items = [], activeId, onSelect }) {
 
                 <div className="flex items-center gap-3">
                   {c.unread ? (
-                    <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-[#D66355] px-1 text-[11px] font-semibold text-white">
+                    <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[#D66355] px-1 text-[11px] font-semibold text-white">
                       {c.unread}
                     </span>
                   ) : null}

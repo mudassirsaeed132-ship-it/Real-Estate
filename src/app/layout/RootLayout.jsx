@@ -7,7 +7,7 @@ import { compareActions } from "../../features/property-compare/model/compareSto
 export default function RootLayout({ children }) {
   const { pathname } = useLocation();
 
-  // ✅ auth screens should be clean (no header/footer)
+  //  auth screens should be clean (no header/footer)
   const isAuthRoute = (pathname || "").startsWith("/auth");
 
   useEffect(() => {

@@ -16,7 +16,7 @@ function Progress({ step }) {
 
 export default function PrecheckWizardShell({ step, rightLabel, children }) {
   return (
-    <div className="mx-auto w-full max-w-[760px] rounded-2xl border border-[#EDEDED] bg-white p-5 sm:p-8">
+    <div className="mx-auto w-full max-w-190 rounded-2xl border border-[#EDEDED] bg-white p-5 sm:p-8">
       <div className="flex items-center justify-between text-[12px]">
         <div className="text-[#D66355]">Step {step} of 3</div>
         <div className="text-[#111827]">{rightLabel}</div>

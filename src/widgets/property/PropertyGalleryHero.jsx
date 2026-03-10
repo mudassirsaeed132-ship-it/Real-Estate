@@ -14,7 +14,7 @@ export default function PropertyGalleryHero({
   const total = safeImages.length || 1;
 
   const [idx, setIdx] = useState(0);
-  const [dir, setDir] = useState(1); // ✅ 1 = next, -1 = prev
+  const [dir, setDir] = useState(1); //  1 = next, -1 = prev
 
   const prev = () => {
     setDir(-1);
@@ -34,7 +34,7 @@ export default function PropertyGalleryHero({
 
   const activeSrc = safeImages[idx] || safeImages[0];
 
-  // ✅ prefetch next/prev for smooth arrows
+  //  prefetch next/prev for smooth arrows
   useEffect(() => {
     if (!safeImages.length) return;
     const nextSrc = safeImages[(idx + 1) % total];
@@ -67,7 +67,7 @@ export default function PropertyGalleryHero({
   return (
     <div className={cn("relative w-full overflow-hidden", className)}>
       <div className={cn("relative w-full", heightClassName)}>
-        {/* ✅ Animated image layer */}
+        {/*  Animated image layer */}
         <AnimatePresence initial={false} custom={dir} mode="popLayout">
           {activeSrc ? (
             <motion.img

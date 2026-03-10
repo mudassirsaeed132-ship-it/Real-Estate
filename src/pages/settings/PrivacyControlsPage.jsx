@@ -89,12 +89,12 @@ export default function PrivacyControlsPage() {
         <PageShell className="py-8">
           <PageHeaderBar title="Privacy Controls" onBack={() => navigate(-1)} />
           <div className="mt-5 rounded-2xl border border-[#EDEDED] bg-white p-5 sm:p-8">
-            <Skeleton className="h-4 w-[520px] max-w-full" />
-            <Skeleton className="mt-4 h-4 w-[360px] max-w-full" />
-            <Skeleton className="mt-6 h-[72px] w-full rounded-xl" />
-            <Skeleton className="mt-4 h-[72px] w-full rounded-xl" />
-            <Skeleton className="mt-4 h-[72px] w-full rounded-xl" />
-            <Skeleton className="mt-8 h-[160px] w-full rounded-2xl" />
+            <Skeleton className="h-4 w-130 max-w-full" />
+            <Skeleton className="mt-4 h-4 w-90 max-w-full" />
+            <Skeleton className="mt-6 h-18 w-full rounded-xl" />
+            <Skeleton className="mt-4 h-18 w-full rounded-xl" />
+            <Skeleton className="mt-4 h-18 w-full rounded-xl" />
+            <Skeleton className="mt-8 h-40 w-full rounded-2xl" />
           </div>
         </PageShell>
       </div>
@@ -230,7 +230,7 @@ export default function PrivacyControlsPage() {
             <button
               type="button"
               onClick={() => apiPost(ENDPOINTS.privacyExport, {}).then(() => alert("Requested (mock)")).catch(() => {})}
-              className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#EDEDED] bg-white text-[13px] font-semibold text-[#111827] hover:bg-black/[0.02]"
+              className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#EDEDED] bg-white text-[13px] font-semibold text-[#111827] hover:bg-black/2"
             >
               <Download className="h-4 w-4" />
               Request Data Export

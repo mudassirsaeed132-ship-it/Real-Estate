@@ -310,7 +310,7 @@ export default function BookingLayout({
 
             {paymentOpen ? (
               <div className="px-6 py-4">
-                {/* ✅ reusable component (no duplication) */}
+                {/*  reusable component (no duplication) */}
                 <PaymentMethodSelector
                   value={paymentMethod}
                   onChange={onPaymentMethodChange}
@@ -323,7 +323,7 @@ export default function BookingLayout({
         <>
           {/* SALE: offer/apply */}
           <div className="mt-5 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-            {/* ✅ reusable offer form */}
+            {/*  reusable offer form */}
             <OfferApplicationForm
               offer={offer}
               onOfferChange={onOfferChange}
