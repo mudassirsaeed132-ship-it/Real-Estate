@@ -24,10 +24,12 @@ export default function UserMenu() {
 
   const isAuthed = Boolean(token);
 
-  const isSeller = String(role) === ROLES.SELLER || String(user?.role) === ROLES.SELLER;
+  const isSeller =
+    String(role) === ROLES.SELLER || String(user?.role) === ROLES.SELLER;
 
-  //  show SELL only while notifications are open (and only seller)
   const showSell = isAuthed && notifOpen;
+
+  const landingUrl = import.meta.env.VITE_LANDING_APP_URL || "/";
 
   const uiUser = useMemo(() => {
     const name = user?.firstName || user?.name || "User";
@@ -56,6 +58,7 @@ export default function UserMenu() {
 
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
+
     return () => {
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("keydown", onKey);
@@ -73,24 +76,29 @@ export default function UserMenu() {
     navigate(path);
   };
 
+  const handleLogout = () => {
+    setMenuOpen(false);
+    setNotifOpen(false);
+    clearSession();
+    window.location.href = landingUrl;
+  };
+
   return (
-    <div className="flex items-center gap-2 flex-nowrap" ref={wrapRef}>
+    <div className="flex flex-nowrap items-center gap-2" ref={wrapRef}>
       {!isAuthed ? (
         <Button onClick={() => goAuth("/")} className="h-10 rounded-full px-5">
           Login
         </Button>
       ) : (
         <>
-          {/* Heart */}
           <IconButton
             className="h-9 w-9 sm:h-10 sm:w-10"
             aria-label="Favorites"
             onClick={() => go("/profile/favorites")}
           >
-            <Heart className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-[#6B7280]" />
+            <Heart className="h-4 w-4 text-[#6B7280] sm:h-4.5 sm:w-4.5" />
           </IconButton>
 
-          {/* Message */}
           <IconButton
             className="h-9 w-9 sm:h-10 sm:w-10"
             aria-label="Chats"
@@ -104,7 +112,6 @@ export default function UserMenu() {
             />
           </IconButton>
 
-          {/* Bell + Popover */}
           <div className="relative">
             <IconButton
               className="h-9 w-9 sm:h-10 sm:w-10"
@@ -114,13 +121,15 @@ export default function UserMenu() {
                 setNotifOpen((v) => !v);
               }}
             >
-              <Bell className="h-4 w-4 sm:h-4.5 sm:w-4.5 text-[#6B7280]" />
+              <Bell className="h-4 w-4 text-[#6B7280] sm:h-4.5 sm:w-4.5" />
             </IconButton>
 
-            <NotificationsPopover open={notifOpen} onClose={() => setNotifOpen(false)} />
+            <NotificationsPopover
+              open={notifOpen}
+              onClose={() => setNotifOpen(false)}
+            />
           </div>
 
-          {/*  Profile (avatar) FIRST */}
           <div className="relative">
             <button
               type="button"
@@ -132,11 +141,11 @@ export default function UserMenu() {
               aria-label="User menu"
               aria-expanded={menuOpen}
             >
-              <span className="relative inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full">
+              <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-full sm:h-10 sm:w-10">
                 <img
                   src={uiUser.avatar}
                   alt="User"
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover"
+                  className="h-9 w-9 rounded-full object-cover sm:h-10 sm:w-10"
                   draggable={false}
                 />
                 <span className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-[#D66355]" />
@@ -148,7 +157,7 @@ export default function UserMenu() {
             {menuOpen ? (
               <div
                 className={[
-                  "absolute right-0 top-full mt-2 z-50",
+                  "absolute right-0 top-full z-50 mt-2",
                   "w-[320px] max-w-[92vw]",
                   "max-sm:fixed max-sm:right-3 max-sm:top-16 max-sm:mt-0",
                   "overflow-hidden rounded-2xl border border-[#EDEDED] bg-white shadow-xl",
@@ -164,14 +173,14 @@ export default function UserMenu() {
                   />
 
                   <div className="min-w-0">
-                    <div className="truncate text-[16px] sm:text-[18px] font-semibold text-[#111827] leading-tight">
+                    <div className="truncate text-[16px] font-semibold leading-tight text-[#111827] sm:text-[18px]">
                       {uiUser.name}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => go("/profile")}
-                      className="mt-1 text-[13px] sm:text-[14px] font-semibold text-[#D66355] underline underline-offset-4"
+                      className="mt-1 text-[13px] font-semibold text-[#D66355] underline underline-offset-4 sm:text-[14px]"
                     >
                       View Public Profile
                     </button>
@@ -186,7 +195,7 @@ export default function UserMenu() {
                   className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/2"
                   role="menuitem"
                 >
-                  <span className="text-[15px] sm:text-[16px] font-semibold text-[#111827]">
+                  <span className="text-[15px] font-semibold text-[#111827] sm:text-[16px]">
                     Privacy controls
                   </span>
                   <ChevronRight className="h-5 w-5 text-[#9CA3AF]" />
@@ -194,16 +203,11 @@ export default function UserMenu() {
 
                 <button
                   type="button"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setNotifOpen(false);
-                    clearSession();
-                    navigate("/", { replace: true });
-                  }}
+                  onClick={handleLogout}
                   className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-black/2"
                   role="menuitem"
                 >
-                  <span className="text-[15px] sm:text-[16px] font-semibold text-[#111827]">
+                  <span className="text-[15px] font-semibold text-[#111827] sm:text-[16px]">
                     Logout
                   </span>
                   <ChevronRight className="h-5 w-5 text-[#9CA3AF]" />
@@ -212,12 +216,11 @@ export default function UserMenu() {
             ) : null}
           </div>
 
-          {/*  SELL AFTER avatar/profile (matches Figma) */}
           {showSell ? (
             <Button
               variant="outline"
               onClick={() => go("/sell")}
-              className="inline-flex h-9 sm:h-10 rounded-full border-[#D66355] text-[#D66355] hover:bg-[#D66355]/10 px-4"
+              className="inline-flex h-9 rounded-full border-[#D66355] px-4 text-[#D66355] hover:bg-[#D66355]/10 sm:h-10"
             >
               <span className="inline-flex items-center gap-2">
                 <Plus className="h-4 w-4" />
