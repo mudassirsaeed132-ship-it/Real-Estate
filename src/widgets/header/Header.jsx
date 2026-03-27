@@ -4,6 +4,7 @@ import PageShell from "../../app/layout/PageShell";
 import HeaderSearch from "./HeaderSearch";
 import UserMenu from "./UserMenu";
 import logo from "../../assets/images/logo/real-estate-logo.png";
+import Applogo from "../../assets/images/logo/logo.png";
 
 export default function Header() {
   const headerRef = useRef(null);
@@ -42,7 +43,7 @@ export default function Header() {
           {/*  SPA friendly (no full reload) */}
           <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Home">
             <img
-              src={logo}
+              src={Applogo}
               alt="Real Estate"
               className="h-9 sm:h-10 w-auto max-w-40 object-contain"
             />
